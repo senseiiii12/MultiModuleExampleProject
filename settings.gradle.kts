@@ -23,7 +23,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "KoinMudules"
+rootProject.name = "Lask"
 include(":app")
 include(":core:network")
 include(":core:database")

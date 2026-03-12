@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.koin.users"
+    namespace = "dev.alexmester.users"
 }
 
 dependencies {

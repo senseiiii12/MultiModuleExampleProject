@@ -1,11 +1,12 @@
 plugins {
-    id("myapp.android.library")  // заменяет android.library + общие зависимости
-    id("myapp.room")             // заменяет ksp + room зависимости
-    id("myapp.koin")             // заменяет koin зависимости
+    id("myapp.android.library")
+    id("myapp.room")
+    id("myapp.koin")
 }
 
 android {
-    namespace = "com.koin.database"
+//    namespace = "com.koin.database"
+    namespace = "dev.alexmester.database"
 }
 
 dependencies {

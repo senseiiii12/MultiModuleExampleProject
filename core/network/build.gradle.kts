@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.koin.network"
+    namespace = "dev.alexmester.network"
 }
 
 dependencies {
