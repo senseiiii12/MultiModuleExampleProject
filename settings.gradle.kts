@@ -24,11 +24,12 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Lask"
+
 include(":app")
 include(":core:network")
 include(":core:database")
+include(":core:ui")
+include(":core:models")
+
 include(":feature:posts")
 include(":feature:users")
-
-
-include(":core:ui")

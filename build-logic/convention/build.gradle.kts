@@ -31,6 +31,10 @@ gradlePlugin {
             id = "myapp.android.compose"
             implementationClass = "AndroidComposeConventionPlugin"
         }
+        register("kotlinLibrary") {
+            id = "myapp.kotlin.library"
+            implementationClass = "KotlinLibraryConventionPlugin"
+        }
         register("kotlinSerialization") {
             id = "myapp.kotlin.serialization"
             implementationClass = "KotlinSerializationConventionPlugin"
