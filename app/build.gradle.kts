@@ -7,7 +7,6 @@ plugins {
 }
 
 android {
-//    namespace = "com.koin.koinmudules"
     namespace = "dev.alexmester.lask"
 
     defaultConfig {

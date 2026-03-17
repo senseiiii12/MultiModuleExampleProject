@@ -9,10 +9,6 @@ android {
     namespace = "dev.alexmester.posts"
 }
 
-
-
-
-
 dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:database"))

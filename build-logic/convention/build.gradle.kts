@@ -47,5 +47,13 @@ gradlePlugin {
             id = "myapp.room"
             implementationClass = "RoomConventionPlugin"
         }
+        register("coil") {
+            id = "myapp.coil"
+            implementationClass = "CoilConventionPlugin"
+        }
+        register("datastore") {
+            id = "myapp.datastore"
+            implementationClass = "DataStoreConventionPlugin"
+        }
     }
 }
