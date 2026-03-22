@@ -14,7 +14,7 @@ import dev.alexmester.database.entity.NewsArticleEntity
         NewsArticleEntity::class,
         BookmarkEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 @TypeConverters(StringListConverter::class)

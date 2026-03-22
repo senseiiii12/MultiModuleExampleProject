@@ -28,8 +28,9 @@ data class NewsArticleEntity(
     val sourceCountry: String?,
     val sentiment: Double?,
     val cachedAt: Long,            // System.currentTimeMillis()
-    val sourceScreen: String,      // NewsArticleEntity.Source.name()
-) {
+    val sourceScreen: String,
+    val clusterId: Int = -1,
+){
     companion object {
         const val SOURCE_FEED = "FEED"
         const val SOURCE_SEARCH = "SEARCH"

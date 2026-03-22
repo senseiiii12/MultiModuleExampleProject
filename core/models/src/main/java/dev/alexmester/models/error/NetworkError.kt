@@ -7,6 +7,8 @@ sealed class NetworkError : Exception() {
 
     class Unauthorized : NetworkError()
 
+    class PaymentRequired : NetworkError()
+
     class Timeout : NetworkError()
 
     data class HttpError(

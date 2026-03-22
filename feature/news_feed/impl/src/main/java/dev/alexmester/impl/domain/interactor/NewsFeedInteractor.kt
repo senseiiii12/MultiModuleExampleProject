@@ -2,7 +2,7 @@ package dev.alexmester.impl.domain.interactor
 
 import dev.alexmester.datastore.UserPreferencesDataSource
 import dev.alexmester.impl.domain.repository.NewsFeedRepository
-import dev.alexmester.models.news.NewsArticle
+import dev.alexmester.models.news.NewsCluster
 import dev.alexmester.models.result.AppResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -12,8 +12,8 @@ class NewsFeedInteractor(
     private val preferencesDataSource: UserPreferencesDataSource,
 ) {
 
-    fun getArticlesFlow(): Flow<List<NewsArticle>> =
-        repository.getArticlesFlow()
+    fun getClustersFlow(): Flow<List<NewsCluster>> =
+        repository.getClustersFlow()
 
     suspend fun refresh(forceRefresh: Boolean = false): AppResult<Unit> {
         val prefs = preferencesDataSource.userPreferences.first()
@@ -21,15 +21,6 @@ class NewsFeedInteractor(
             country = prefs.defaultCountry,
             language = prefs.defaultLanguage,
             forceRefresh = forceRefresh,
-        )
-    }
-
-    suspend fun loadMore(offset: Int): AppResult<Unit> {
-        val prefs = preferencesDataSource.userPreferences.first()
-        return repository.loadMoreNews(
-            country = prefs.defaultCountry,
-            language = prefs.defaultLanguage,
-            offset = offset,
         )
     }
 

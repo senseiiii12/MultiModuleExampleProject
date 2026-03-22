@@ -22,6 +22,7 @@ internal object NetworkErrorMapper {
 
         is ResponseException -> when (throwable.response.status.value) {
             401 -> NetworkError.Unauthorized()
+            402 -> NetworkError.PaymentRequired()
             429 -> {
                 val retryAfter = throwable.response.headers["Retry-After"]?.toLongOrNull()
                 NetworkError.RateLimit(retryAfterSeconds = retryAfter)

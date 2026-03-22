@@ -1,31 +1,28 @@
 package dev.alexmester.newsfeed.impl.presentation.feed
 
-import dev.alexmester.models.news.NewsArticle
+import dev.alexmester.models.news.NewsCluster
 
 object NewsFeedReducer {
 
     fun reduce(state: NewsFeedState, intent: NewsFeedIntent): NewsFeedState =
         when (intent) {
             is NewsFeedIntent.LoadFeed -> state.copy(
-                isLoading = state.articles.isEmpty(),
+                isLoading = state.clusters.isEmpty(),
                 error = null,
             )
             is NewsFeedIntent.Refresh -> state.copy(
                 isRefreshing = true,
                 error = null,
             )
-            is NewsFeedIntent.LoadMore -> state.copy(
-                isLoadingMore = true,
-            )
             else -> state
         }
 
-    fun onArticlesLoaded(
+    fun onClustersLoaded(
         state: NewsFeedState,
-        articles: List<NewsArticle>,
+        clusters: List<NewsCluster>,
         lastCachedAt: Long?,
     ): NewsFeedState = state.copy(
-        articles = articles,
+        clusters = clusters,
         isLoading = false,
         lastCachedAt = lastCachedAt,
     )
@@ -33,28 +30,12 @@ object NewsFeedReducer {
     fun onRefreshSuccess(state: NewsFeedState): NewsFeedState = state.copy(
         isRefreshing = false,
         isOffline = false,
-        currentOffset = 0,
-        isEndReached = false,
     )
 
     fun onRefreshError(state: NewsFeedState, message: String): NewsFeedState = state.copy(
         isRefreshing = false,
         isLoading = false,
-        error = if (state.articles.isEmpty()) message else null,
-    )
-
-    fun onLoadMoreSuccess(
-        state: NewsFeedState,
-        newOffset: Int,
-        isEndReached: Boolean,
-    ): NewsFeedState = state.copy(
-        isLoadingMore = false,
-        currentOffset = newOffset,
-        isEndReached = isEndReached,
-    )
-
-    fun onLoadMoreError(state: NewsFeedState): NewsFeedState = state.copy(
-        isLoadingMore = false,
+        error = if (state.clusters.isEmpty()) message else null,
     )
 
     fun onOffline(state: NewsFeedState): NewsFeedState = state.copy(

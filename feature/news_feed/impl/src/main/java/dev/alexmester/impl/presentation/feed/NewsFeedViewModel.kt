@@ -28,7 +28,7 @@ class NewsFeedViewModel(
     val sideEffects = _sideEffects.receiveAsFlow()
 
     init {
-        observeArticles()
+        observeClusters()
         handleIntent(NewsFeedIntent.LoadFeed)
     }
 
@@ -38,18 +38,16 @@ class NewsFeedViewModel(
         when (intent) {
             is NewsFeedIntent.LoadFeed -> loadFeed()
             is NewsFeedIntent.Refresh -> refresh()
-            is NewsFeedIntent.LoadMore -> loadMore()
             is NewsFeedIntent.ArticleClick -> navigateToArticle(intent)
-            is NewsFeedIntent.SearchClick -> navigateToSearch()
         }
     }
 
-    private fun observeArticles() {
-        interactor.getArticlesFlow()
-            .onEach { articles ->
+    private fun observeClusters() {
+        interactor.getClustersFlow()
+            .onEach { clusters ->
                 val cachedAt = interactor.getLastCachedAt()
                 _state.update {
-                    NewsFeedReducer.onArticlesLoaded(it, articles, cachedAt)
+                    NewsFeedReducer.onClustersLoaded(it, clusters, cachedAt)
                 }
             }
             .launchIn(viewModelScope)
@@ -73,27 +71,6 @@ class NewsFeedViewModel(
         }
     }
 
-    private fun loadMore() {
-        val currentState = _state.value
-        if (currentState.isEndReached || currentState.isLoadingMore) return
-
-        viewModelScope.launch {
-            val nextOffset = currentState.currentOffset + PAGE_SIZE
-            when (val result = interactor.loadMore(offset = nextOffset)) {
-                is AppResult.Success -> _state.update {
-                    NewsFeedReducer.onLoadMoreSuccess(
-                        state = it,
-                        newOffset = nextOffset,
-                        isEndReached = false,
-                    )
-                }
-                is AppResult.Failure -> {
-                    _state.update { NewsFeedReducer.onLoadMoreError(it) }
-                }
-            }
-        }
-    }
-
     private fun navigateToArticle(intent: NewsFeedIntent.ArticleClick) {
         viewModelScope.launch {
             _sideEffects.send(
@@ -105,21 +82,16 @@ class NewsFeedViewModel(
         }
     }
 
-    private fun navigateToSearch() {
-        viewModelScope.launch {
-            _sideEffects.send(NewsFeedSideEffect.NavigateToSearch)
-        }
-    }
-
     private fun handleError(error: NetworkError) {
         when (error) {
             is NetworkError.NoInternet -> {
                 _state.update { NewsFeedReducer.onOffline(it) }
             }
             is NetworkError.RateLimit -> {
-                _state.update { NewsFeedReducer.onRefreshError(it, "Превышен лимит запросов") }
+                val message = "Превышен лимит запросов. Попробуйте позже"
+                _state.update { NewsFeedReducer.onRefreshError(it, message) }
                 viewModelScope.launch {
-                    _sideEffects.send(NewsFeedSideEffect.ShowError("Превышен лимит запросов. Попробуйте позже"))
+                    _sideEffects.send(NewsFeedSideEffect.ShowError(message))
                 }
             }
             else -> {

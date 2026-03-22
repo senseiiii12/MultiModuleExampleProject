@@ -31,11 +31,3 @@ data class TopNewsResponseDto(
 data class NewsClusterDto(
     val news: List<NewsArticleDto> = emptyList(),
 )
-
-@Serializable
-data class SearchNewsResponseDto(
-    val news: List<NewsArticleDto> = emptyList(),
-    val available: Int = 0,
-    val number: Int = 0,
-    val offset: Int = 0,
-)

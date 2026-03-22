@@ -4,6 +4,7 @@ import dev.alexmester.database.entity.NewsArticleEntity
 import dev.alexmester.impl.data.remote.dto.NewsArticleDto
 import dev.alexmester.impl.data.remote.dto.NewsClusterDto
 import dev.alexmester.models.news.NewsArticle
+import dev.alexmester.models.news.NewsCluster
 import kotlinx.serialization.json.Json
 
 private val json = Json { ignoreUnknownKeys = true }
@@ -26,17 +27,19 @@ fun NewsArticleDto.toDomain(): NewsArticle = NewsArticle(
     sentiment = sentiment,
 )
 
-/**
- * Разворачиваем кластеры топ-новостей в плоский список статей.
- * Берём только leadArticle из каждого кластера (первую с картинкой).
- */
-fun List<NewsClusterDto>.toFlatDomain(): List<NewsArticle> =
-    flatMap { cluster -> cluster.news.take(1) }
-        .map { it.toDomain() }
+fun NewsClusterDto.toDomain(id: Int): NewsCluster = NewsCluster(
+    id = id,
+    articles = news.map { it.toDomain() },
+)
+
+/** DTO list → Domain clusters */
+fun List<NewsClusterDto>.dtosToCluster(): List<NewsCluster> =
+    mapIndexed { index, dto -> dto.toDomain(index) }
+        .filter { it.articles.isNotEmpty() }
 
 // ── Domain → Entity ───────────────────────────────────────────────────────────
 
-fun NewsArticle.toEntity(sourceScreen: String): NewsArticleEntity = NewsArticleEntity(
+fun NewsArticle.toEntity(sourceScreen: String, clusterId: Int): NewsArticleEntity = NewsArticleEntity(
     id = id,
     title = title,
     text = text,
@@ -52,10 +55,15 @@ fun NewsArticle.toEntity(sourceScreen: String): NewsArticleEntity = NewsArticleE
     sentiment = sentiment,
     cachedAt = System.currentTimeMillis(),
     sourceScreen = sourceScreen,
+    clusterId = clusterId,
 )
 
-fun List<NewsArticle>.toEntities(sourceScreen: String): List<NewsArticleEntity> =
-    map { it.toEntity(sourceScreen) }
+fun List<NewsCluster>.toEntities(sourceScreen: String): List<NewsArticleEntity> =
+    flatMap { cluster ->
+        cluster.articles.map { article ->
+            article.toEntity(sourceScreen, clusterId = cluster.id)
+        }
+    }
 
 // ── Entity → Domain ───────────────────────────────────────────────────────────
 
@@ -75,4 +83,14 @@ fun NewsArticleEntity.toDomain(): NewsArticle = NewsArticle(
     sentiment = sentiment,
 )
 
-fun List<NewsArticleEntity>.toDomain(): List<NewsArticle> = map { it.toDomain() }
+/** Entity list → Domain clusters, restored by clusterId */
+fun List<NewsArticleEntity>.entitiesToClusters(): List<NewsCluster> =
+    groupBy { it.clusterId }
+        .entries
+        .sortedBy { it.key }
+        .map { (clusterId, entities) ->
+            NewsCluster(
+                id = clusterId,
+                articles = entities.map { it.toDomain() },
+            )
+        }

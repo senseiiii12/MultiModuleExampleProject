@@ -1,38 +1,39 @@
 package dev.alexmester.newsfeed.impl.presentation.feed
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import dev.alexmester.newsfeed.impl.presentation.components.ClusterHeader
 import dev.alexmester.newsfeed.impl.presentation.components.NewsArticleCard
 import dev.alexmester.newsfeed.impl.presentation.components.OfflineBanner
+import dev.alexmester.ui.desing_system.LaskColors
+import dev.alexmester.ui.desing_system.LaskTypography
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,34 +44,12 @@ fun NewsFeedScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    val listState = rememberLazyListState()
 
-    // Пагинация — когда до конца списка осталось 3 элемента, грузим следующую страницу
-    val shouldLoadMore by remember {
-        derivedStateOf {
-            val lastVisibleIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            val totalItems = listState.layoutInfo.totalItemsCount
-            lastVisibleIndex >= totalItems - 3 && !state.isEndReached && !state.isLoadingMore
-        }
-    }
-
-    LaunchedEffect(shouldLoadMore) {
-        if (shouldLoadMore && state.articles.isNotEmpty()) {
-            viewModel.handleIntent(NewsFeedIntent.LoadMore)
-        }
-    }
-
-    // SideEffects
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
             when (effect) {
                 is NewsFeedSideEffect.NavigateToArticle -> {
-                    // навигация через ArticleDetailApi будет добавлена
-                    // когда feature:article-detail будет реализована
-                }
-                is NewsFeedSideEffect.NavigateToSearch -> {
-                    // навигация через SearchApi будет добавлена
-                    // когда feature:search будет реализована
+                    // будет подключено когда реализуем feature:article-detail
                 }
                 is NewsFeedSideEffect.ShowError -> {
                     snackbarHostState.showSnackbar(effect.message)
@@ -82,12 +61,16 @@ fun NewsFeedScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Lask") },
-                actions = {
-                    IconButton(onClick = { viewModel.handleIntent(NewsFeedIntent.SearchClick) }) {
-                        Icon(Icons.Default.Search, contentDescription = "Поиск")
-                    }
-                }
+                title = {
+                    Text(
+                        text = "Lask",
+                        style = MaterialTheme.LaskTypography.h3,
+                        color = MaterialTheme.LaskColors.textPrimary
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.LaskColors.brand_blue10
+                )
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -105,7 +88,7 @@ fun NewsFeedScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
-                state.articles.isEmpty() && state.error != null -> {
+                state.clusters.isEmpty() && state.error != null -> {
                     Text(
                         text = state.error!!,
                         modifier = Modifier.align(Alignment.Center),
@@ -114,45 +97,49 @@ fun NewsFeedScreen(
 
                 else -> {
                     LazyColumn(
-                        state = listState,
-                        contentPadding = PaddingValues(vertical = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(bottom = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(0.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.LaskColors.backgroundPrimary),
                     ) {
                         if (state.isOffline) {
-                            item {
+                            item(key = "offline_banner") {
                                 OfflineBanner(lastCachedAt = state.lastCachedAt)
                             }
                         }
 
-                        items(
-                            items = state.articles,
-                            key = { it.id },
-                        ) { article ->
-                            NewsArticleCard(
-                                article = article,
-                                onClick = {
-                                    viewModel.handleIntent(
-                                        NewsFeedIntent.ArticleClick(
-                                            articleId = article.id,
-                                            articleUrl = article.url,
-                                        )
-                                    )
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp),
-                            )
-                        }
+                        state.clusters.forEach { cluster ->
+                            stickyHeader(key = "header_${cluster.id}") {
+                                ClusterHeader(
+                                    modifier = Modifier.padding(horizontal = 16.dp),
+                                    title = cluster.leadArticle.title,
+                                )
+                            }
 
-                        if (state.isLoadingMore) {
-                            item {
-                                Box(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    CircularProgressIndicator(modifier = Modifier.padding(16.dp))
-                                }
+                            items(
+                                items = cluster.articles,
+                                key = { it.id },
+                            ) { article ->
+                                val isLast = article == cluster.articles.last()
+                                NewsArticleCard(
+                                    article = article,
+                                    onClick = {
+                                        viewModel.handleIntent(
+                                            NewsFeedIntent.ArticleClick(
+                                                articleId = article.id,
+                                                articleUrl = article.url,
+                                            )
+                                        )
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                                        .then(
+                                            if (isLast) Modifier.padding(bottom = 24.dp)
+                                            else Modifier
+                                        ),
+                                )
                             }
                         }
                     }
