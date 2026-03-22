@@ -10,6 +10,8 @@ class CoilConventionPlugin : Plugin<Project> {
             dependencies {
                 add("implementation", libs.findLibrary("coil.compose").get())
                 add("implementation", libs.findLibrary("coil.core").get())
+                // Нужен для загрузки изображений по https URL
+                add("implementation", libs.findLibrary("coil.network.ktor").get())
             }
         }
     }

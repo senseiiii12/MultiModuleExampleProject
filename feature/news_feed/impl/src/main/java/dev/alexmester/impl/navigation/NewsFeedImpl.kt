@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import dev.alexmester.api.navigation.FeedRoute
 import dev.alexmester.api.navigation.NewsFeedApi
+import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedScreen
 
 /**
  * Реализация NewsFeedApi.
@@ -23,7 +24,7 @@ class NewsFeedImpl : NewsFeedApi {
         navController: NavHostController,
     ) {
         navGraphBuilder.composable<FeedRoute> {
-//            NewsFeedScreen(navController = navController)
+            NewsFeedScreen(navController = navController)
         }
     }
 }

@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("myapp.android.library")
     id("myapp.ktor")
@@ -5,12 +7,19 @@ plugins {
     id("myapp.kotlin.serialization")
 }
 
+
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        load(localPropertiesFile.inputStream())
+    }
+}
+
 android {
     namespace = "dev.alexmester.network"
 
     defaultConfig {
-        // Добавь в local.properties: NEWS_API_KEY=your_key_here
-        val newsApiKey = project.findProperty("NEWS_API_KEY")?.toString()
+        val newsApiKey = localProperties.getProperty("NEWS_API_KEY")
             ?: System.getenv("NEWS_API_KEY")
             ?: ""
         buildConfigField("String", "NEWS_API_KEY", "\"$newsApiKey\"")

@@ -5,10 +5,11 @@ plugins {
     id("myapp.kotlin.serialization")
     id("myapp.room")
     id("myapp.ktor")
+    id("myapp.coil")
 }
 
 android {
-    namespace = "dev.alexmester.newsfeed.impl"
+    namespace = "dev.alexmester.news_feed.impl"
 }
 
 dependencies {
