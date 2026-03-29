@@ -1,4 +1,4 @@
-package dev.alexmester.lask.navigation
+package dev.alexmester.lask.welcome_screen
 
 import kotlinx.serialization.Serializable
 

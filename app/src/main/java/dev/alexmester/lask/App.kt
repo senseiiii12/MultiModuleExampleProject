@@ -17,6 +17,7 @@ import dev.alexmester.database.di.databaseModule
 import dev.alexmester.datastore.di.dataStoreModule
 import dev.alexmester.impl.di.newsFeedModule
 import dev.alexmester.impl.navigation.NewsFeedImpl
+import dev.alexmester.lask.welcome_screen.SplashViewModel
 import dev.alexmester.network.di.networkModule
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -25,6 +26,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.logger.Level
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 
@@ -35,6 +37,9 @@ val featuresModule = module {
     // single<BookmarksApi> { BookmarksImpl() }
     // single<SettingsApi> { SettingsImpl() }
     // single<SearchApi> { SearchImpl() }
+}
+val splashModule = module {
+    viewModel { SplashViewModel(preferencesDataSource = get()) }
 }
 
 class App : Application(), SingletonImageLoader.Factory {
@@ -99,6 +104,7 @@ class App : Application(), SingletonImageLoader.Factory {
             androidContext(this@App)
 
             modules(
+                splashModule,
                 // Core
                 networkModule,
                 databaseModule,

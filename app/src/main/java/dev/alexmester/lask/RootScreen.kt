@@ -21,7 +21,7 @@ import dev.alexmester.api.navigation.ExploreRoute
 import dev.alexmester.api.navigation.FeedRoute
 import dev.alexmester.api.navigation.NewsFeedApi
 import dev.alexmester.api.navigation.ProfileRoute
-import dev.alexmester.lask.navigation.WelcomeRoute
+import dev.alexmester.lask.welcome_screen.WelcomeRoute
 import dev.alexmester.navigation.register
 import dev.alexmester.ui.R
 import dev.alexmester.ui.components.bottom_bar.BottomBarItem
@@ -35,7 +35,9 @@ import org.koin.compose.koinInject
 
 @Composable
 fun RootScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    startDestination: Any = WelcomeRoute,
+    onOnboardingComplete: () -> Unit = {},
 ) {
     val newsFeedApi = koinInject<NewsFeedApi>()
 
@@ -100,7 +102,7 @@ fun RootScreen(
 
         NavHost(
             navController = navController,
-            startDestination = WelcomeRoute,
+            startDestination = startDestination,
             modifier = Modifier.hazeSource(hazeState),
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None },
@@ -109,6 +111,7 @@ fun RootScreen(
             composable<WelcomeRoute> {
                 WelcomeScreen(
                     onExploreClick = {
+                        onOnboardingComplete()
                         navController.navigate(FeedRoute) {
                             popUpTo(WelcomeRoute) { inclusive = true }
                         }
