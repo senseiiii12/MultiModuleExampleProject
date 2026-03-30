@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alexmester.impl.presentation.NewsFeedViewModel
 import dev.alexmester.impl.presentation.components.NewsFeedList
+import dev.alexmester.impl.presentation.components.NewsFeedTopBar
 import dev.alexmester.ui.R
 import dev.alexmester.ui.components.pull_to_refresh_box.LaskPullToRefreshBox
 import dev.alexmester.ui.desing_system.LaskColors
@@ -85,34 +86,9 @@ internal fun NewsFeedScreenContent(
 ) {
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(R.string.tab_top_news),
-                            style = MaterialTheme.LaskTypography.h3,
-                            color = MaterialTheme.LaskColors.textPrimary
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        if (state is NewsFeedScreenState.Content) {
-                            Text(
-                                text = countryToFlag(state.country),
-                                style = MaterialTheme.LaskTypography.h5,
-                            )
-                        }
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.LaskColors.brand_blue10
-                )
-            )
-        },
+        topBar = { NewsFeedTopBar(state = state) },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -141,7 +117,7 @@ internal fun NewsFeedScreenContent(
                 is NewsFeedScreenState.Content -> {
                     LaskPullToRefreshBox(
                         modifier = Modifier.fillMaxSize(),
-                        isRefreshing = currentState.contentState is ContentState.Refreshing,
+                        isRefreshing = currentState.isRefreshing,
                         onRefresh = onRefresh,
                         state = stateRefreshBox,
                     ) {

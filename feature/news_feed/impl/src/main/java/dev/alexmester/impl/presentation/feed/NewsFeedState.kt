@@ -19,3 +19,21 @@ sealed interface ContentState {
     data object Refreshing : ContentState
     data class Offline(val lastCachedAt: Long?) : ContentState
 }
+
+val NewsFeedScreenState.isContent: Boolean
+    get() = this is NewsFeedScreenState.Content
+
+val NewsFeedScreenState.contentOrNull: NewsFeedScreenState.Content?
+    get() = this as? NewsFeedScreenState.Content
+
+val NewsFeedScreenState.isLoading: Boolean
+    get() = this is NewsFeedScreenState.Loading
+
+val NewsFeedScreenState.isError: Boolean
+    get() = this is NewsFeedScreenState.Error
+
+val NewsFeedScreenState.isRefreshing: Boolean
+    get() = this is NewsFeedScreenState.Content && this.contentState is ContentState.Refreshing
+
+val NewsFeedScreenState.isOffline: Boolean
+    get() = this is NewsFeedScreenState.Content && this.contentState is ContentState.Offline

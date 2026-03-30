@@ -11,6 +11,9 @@ import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedIntent
 import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedReducer
 import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedScreenState
 import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedSideEffect
+import dev.alexmester.newsfeed.impl.presentation.feed.contentOrNull
+import dev.alexmester.newsfeed.impl.presentation.feed.isContent
+import dev.alexmester.newsfeed.impl.presentation.feed.isOffline
 import dev.alexmester.ui.R
 import dev.alexmester.ui.uitext.UiText
 import kotlinx.coroutines.channels.Channel
@@ -52,13 +55,11 @@ class NewsFeedViewModel(
 
     private fun observeClusters() {
         interactor.getClustersFlow().onEach { clusters ->
+            if (clusters.isEmpty()) return@onEach
             val lastCachedAt = interactor.getLastCachedAt()
             val currentState = _state.value
             val country = interactor.getCountry()
-            if (clusters.isEmpty()) return@onEach
-            if (currentState !is NewsFeedScreenState.Content ||
-                currentState.contentState !is ContentState.Offline
-            ) {
+            if (!currentState.isContent || !currentState.isOffline) {
                 _state.update {
                     NewsFeedReducer.onClustersLoaded(clusters, lastCachedAt, country)
                 }
@@ -110,41 +111,32 @@ class NewsFeedViewModel(
 
     private fun handleError(error: NetworkError) {
         viewModelScope.launch {
-            val currentState = _state.value
-            when (error) {
-                is NetworkError.NoInternet -> {
-                    val message = UiText.StringResource(R.string.error_no_internet)
-                    val clusters =
-                        (currentState as? NewsFeedScreenState.Content)?.clusters ?: emptyList()
-                    val lastCachedAt = interactor.getLastCachedAt()
-                    _state.update {
-                        NewsFeedReducer.onOffline(
-                            clusters = clusters,
-                            lastCachedAt = lastCachedAt,
-                            message = message
-                        )
-                    }
-                    _sideEffects.send(NewsFeedSideEffect.ShowError(message))
-                }
-
-                is NetworkError.PaymentRequired -> {
-                    val message = UiText.StringResource(R.string.error_payment_required)
-                    _sideEffects.send(NewsFeedSideEffect.ShowError(message))
-                    _state.update { NewsFeedReducer.onError(currentState, message) }
-                }
-
-                is NetworkError.RateLimit -> {
-                    val message = UiText.StringResource(R.string.error_rate_limit)
-                    _state.update { NewsFeedReducer.onError(currentState, message) }
-                    _sideEffects.send(NewsFeedSideEffect.ShowError(message))
-                }
-
-                else -> {
-                    val message = UiText.StringResource(R.string.error_unknown)
-                    _state.update { NewsFeedReducer.onError(currentState, message) }
-                    _sideEffects.send(NewsFeedSideEffect.ShowError(message))
-                }
+            val message = error.toUiText()
+            if (error is NetworkError.NoInternet) {
+                val clusters = _state.value.contentOrNull?.clusters ?: emptyList()
+                val lastCachedAt = interactor.getLastCachedAt()
+                showError(message) { NewsFeedReducer.onOffline(clusters, lastCachedAt, message) }
+            } else {
+                showError(message)
             }
         }
+    }
+
+    private suspend fun showError(
+        message: UiText,
+        updateState: (NewsFeedScreenState) -> NewsFeedScreenState = {
+            NewsFeedReducer.onError(it, message)
+        }
+    ) {
+        val currentState = _state.value
+        _state.update { updateState(currentState) }
+        _sideEffects.send(NewsFeedSideEffect.ShowError(message))
+    }
+
+    private fun NetworkError.toUiText(): UiText = when (this) {
+        is NetworkError.NoInternet -> UiText.StringResource(R.string.error_no_internet)
+        is NetworkError.PaymentRequired -> UiText.StringResource(R.string.error_payment_required)
+        is NetworkError.RateLimit -> UiText.StringResource(R.string.error_rate_limit)
+        else -> UiText.StringResource(R.string.error_unknown)
     }
 }

@@ -29,3 +29,4 @@ sealed class NetworkError : Exception() {
         override val message: String? = null
     ) : NetworkError()
 }
+
