@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavHostController
-import dev.alexmester.ui.components.bottom_bar.BottomBarItem
+import dev.alexmester.ui.components.bottom_bar.LaskMainBottomBarItem
 import dev.alexmester.ui.components.bottom_bar.LaskBottomBar
 import dev.chrisbanes.haze.HazeState
 
@@ -24,12 +24,12 @@ fun AppBottomBar(
     LaskBottomBar(
         hazeState = hazeState,
         items = tabs.map { tab ->
-            BottomBarItem(
+            LaskMainBottomBarItem(
                 icon = ImageVector.vectorResource(tab.iconRes),
                 title = stringResource(tab.titleRes),
                 isSelected = tab.route == selectedTab,
                 onClick = {
-                    if (tab.route == selectedTab) return@BottomBarItem
+                    if (tab.route == selectedTab) return@LaskMainBottomBarItem
                     selectedTab = tab.route
                     navController.navigate(tab.route) {
                         popUpTo(navController.graph.startDestinationId)

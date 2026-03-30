@@ -1,5 +1,7 @@
 package dev.alexmester.ui.components.bottom_bar
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,15 +23,17 @@ import dev.chrisbanes.haze.hazeEffect
 
 @Composable
 fun LaskBottomBar(
-    items: List<BottomBarItem>,
+    items: List<LaskMainBottomBarItem>,
     modifier: Modifier = Modifier,
-    hazeState: HazeState
+    hazeState: HazeState,
+    isArticleDetailsScreen: Boolean = true,
 ) {
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .navigationBarsPadding(),
+            .navigationBarsPadding()
+            .animateContentSize(),
         contentAlignment = Alignment.Center
     ) {
         Row(
@@ -37,17 +41,23 @@ fun LaskBottomBar(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                 .background(MaterialTheme.LaskColors.brand_blue10)
-                .hazeEffect(state = hazeState){
+                .hazeEffect(state = hazeState) {
                     alpha = 0.5f
-                    blurRadius = 10.dp
+                    blurRadius = 20.dp
                     noiseFactor = 0.05f
                 }
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            items.forEach { item ->
-                BottomBarItemView(item)
+            AnimatedContent(targetState = isArticleDetailsScreen) { isArticleDetailsScreen ->
+                if (isArticleDetailsScreen) {
+                    LaskArticleDetailsContent()
+                } else {
+                    items.forEach { item ->
+                        LaskMainContent(item)
+                    }
+                }
             }
         }
     }
