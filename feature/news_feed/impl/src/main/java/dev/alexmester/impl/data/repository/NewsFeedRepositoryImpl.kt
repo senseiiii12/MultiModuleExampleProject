@@ -1,5 +1,6 @@
 package dev.alexmester.impl.data.repository
 
+import android.util.Log
 import dev.alexmester.database.entity.NewsArticleEntity.Companion.SOURCE_FEED
 import dev.alexmester.impl.data.local.NewsFeedLocalDataSource
 import dev.alexmester.impl.data.mapper.dtosToCluster
@@ -24,14 +25,18 @@ class NewsFeedRepositoryImpl(
     override suspend fun refreshTopNews(
         country: String,
         language: String,
-        forceRefresh: Boolean,
     ): AppResult<Unit> = safeApiCall {
-        val clusters = remote.getTopNews(
-            sourceCountry = country,
-            language = language,
-        ).topNews.dtosToCluster()
+        val response = remote.getTopNews(sourceCountry = country, language = language)
+        Log.d("NewsFeed", "API clusters count: ${response.topNews.size}")
 
-        local.replaceArticles(clusters.toEntities(SOURCE_FEED))
+        val clusters = response.topNews.dtosToCluster()
+        Log.d("NewsFeed", "Domain clusters count: ${clusters.size}")
+
+        val entities = clusters.toEntities(SOURCE_FEED)
+        Log.d("NewsFeed", "Entities to save: ${entities.size}")
+
+        local.replaceArticles(entities)
+        Log.d("NewsFeed", "Saved to Room")
     }
 
     override suspend fun getLastCachedAt(): Long? =

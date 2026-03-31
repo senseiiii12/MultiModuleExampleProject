@@ -11,7 +11,6 @@ interface NewsFeedRepository {
     suspend fun refreshTopNews(
         country: String,
         language: String,
-        forceRefresh: Boolean = false,
     ): AppResult<Unit>
 
     suspend fun getLastCachedAt(): Long?

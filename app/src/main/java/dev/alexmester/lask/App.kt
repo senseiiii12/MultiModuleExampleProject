@@ -16,10 +16,12 @@ import dev.alexmester.api.navigation.NewsFeedApi
 import dev.alexmester.database.di.databaseModule
 import dev.alexmester.datastore.di.dataStoreModule
 import dev.alexmester.datastore.util.DeviceLocaleProvider
+import dev.alexmester.datastore.util.LocaleChangeObserver
 import dev.alexmester.impl.di.newsFeedModule
 import dev.alexmester.impl.navigation.NewsFeedImpl
 import dev.alexmester.lask.welcome_screen.SplashViewModel
 import dev.alexmester.network.di.networkModule
+import kotlinx.coroutines.GlobalScope
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.Path.Companion.toOkioPath
@@ -47,6 +49,14 @@ val splashModule = module {
         )
     }
     single { DeviceLocaleProvider(androidContext()) }
+    single {
+        LocaleChangeObserver(
+            context = androidContext(),
+            deviceLocaleProvider = get(),
+            preferencesDataSource = get(),
+            scope = GlobalScope,
+        )
+    }
 }
 
 class App : Application(), SingletonImageLoader.Factory {

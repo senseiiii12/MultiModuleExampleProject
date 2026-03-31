@@ -1,5 +1,6 @@
 package dev.alexmester.impl.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.alexmester.datastore.model.UserPreferences
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -38,10 +40,10 @@ class NewsFeedViewModel(
     private val _sideEffects = Channel<NewsFeedSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
+    private var lastKnownCountry: String? = null
+
     init {
-        observeClusters()
-        observePreferencesChanges()
-        loadFeed()
+        observeClustersWithPrefs()
     }
 
     fun handleIntent(intent: NewsFeedIntent) {
@@ -49,22 +51,61 @@ class NewsFeedViewModel(
 
         when (intent) {
             is NewsFeedIntent.Refresh -> refresh()
-            is NewsFeedIntent.ArticleClick -> navigateToArticle(intent)
+            is NewsFeedIntent.ArticleClick -> emitSideEffect(
+                NewsFeedSideEffect.NavigateToArticle(intent.articleId, intent.articleUrl)
+            )
         }
     }
 
+    private fun observeClustersWithPrefs() {
+        interactor.getClustersWithPrefsFlow()
+            .onStart {
+                loadFeed()
+            }
+            .onEach { (clusters, prefs) ->
+
+                val countryChanged = lastKnownCountry != null &&
+                lastKnownCountry != prefs.defaultCountry
+
+                when {
+                    countryChanged -> {
+                        lastKnownCountry = prefs.defaultCountry
+                        _state.update { NewsFeedScreenState.Loading }
+                        loadFeed()
+                    }
+
+                    _state.value.isOffline -> Unit
+
+                    clusters.isNotEmpty() -> {
+                        lastKnownCountry = prefs.defaultCountry
+                        val lastCachedAt = interactor.getLastCachedAt()
+                        _state.update {
+                            NewsFeedReducer.onClustersLoaded(
+                                clusters = clusters,
+                                lastCachedAt = lastCachedAt,
+                                country = prefs.defaultCountry,
+                            )
+                        }
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
     private fun observeClusters() {
-        interactor.getClustersFlow().onEach { clusters ->
-            if (clusters.isEmpty()) return@onEach
-            val lastCachedAt = interactor.getLastCachedAt()
-            val currentState = _state.value
-            val country = interactor.getCountry()
-            if (!currentState.isContent || !currentState.isOffline) {
+        interactor.getClustersFlow()
+            .onEach { clusters ->
+                if (clusters.isEmpty()) return@onEach
+                val currentState = _state.value
+                if (currentState.isOffline) return@onEach
+
+                val lastCachedAt = interactor.getLastCachedAt()
+                val country = interactor.getCountry()
                 _state.update {
                     NewsFeedReducer.onClustersLoaded(clusters, lastCachedAt, country)
                 }
             }
-        }.launchIn(viewModelScope)
+            .launchIn(viewModelScope)
     }
 
     private fun observePreferencesChanges() {
@@ -72,71 +113,45 @@ class NewsFeedViewModel(
             .drop(1)
             .distinctUntilChanged { old, new ->
                 old.defaultCountry == new.defaultCountry &&
-                old.defaultLanguage == new.defaultLanguage
+                        old.defaultLanguage == new.defaultLanguage
             }
-            .onEach { newPrefs ->
+            .onEach {
                 _state.update { NewsFeedScreenState.Loading }
                 loadFeed()
-            }.launchIn(viewModelScope)
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun loadFeed() {
         viewModelScope.launch {
-            when (val result = interactor.refresh(forceRefresh = false)) {
-                is AppResult.Success -> Unit
-                is AppResult.Failure -> handleError(result.error)
-            }
+            handleResult(interactor.refresh())
         }
     }
 
     private fun refresh() {
         viewModelScope.launch {
-            when (val result = interactor.refresh(forceRefresh = true)) {
-                is AppResult.Success -> Unit
-                is AppResult.Failure -> handleError(result.error)
-            }
+            handleResult(interactor.refresh())
         }
     }
 
-    private fun navigateToArticle(intent: NewsFeedIntent.ArticleClick) {
-        viewModelScope.launch {
-            _sideEffects.send(
-                NewsFeedSideEffect.NavigateToArticle(
-                    articleId = intent.articleId,
-                    articleUrl = intent.articleUrl,
-                )
+    private fun handleResult(result: AppResult<Unit>) {
+        if (result is AppResult.Failure) {
+            val currentState = _state.value
+            val cachedClusters = currentState.contentOrNull?.clusters ?: emptyList()
+            val lastCachedAt = currentState.contentOrNull?.lastCachedAt
+
+            val (newState, message) = NewsFeedReducer.onNetworkError(
+                state = currentState,
+                error = result.error,
+                cachedClusters = cachedClusters,
+                lastCachedAt = lastCachedAt,
             )
+            _state.update { newState }
+            emitSideEffect(NewsFeedSideEffect.ShowError(message))
         }
     }
 
-    private fun handleError(error: NetworkError) {
-        viewModelScope.launch {
-            val message = error.toUiText()
-            if (error is NetworkError.NoInternet) {
-                val clusters = _state.value.contentOrNull?.clusters ?: emptyList()
-                val lastCachedAt = interactor.getLastCachedAt()
-                showError(message) { NewsFeedReducer.onOffline(clusters, lastCachedAt, message) }
-            } else {
-                showError(message)
-            }
-        }
-    }
-
-    private suspend fun showError(
-        message: UiText,
-        updateState: (NewsFeedScreenState) -> NewsFeedScreenState = {
-            NewsFeedReducer.onError(it, message)
-        }
-    ) {
-        val currentState = _state.value
-        _state.update { updateState(currentState) }
-        _sideEffects.send(NewsFeedSideEffect.ShowError(message))
-    }
-
-    private fun NetworkError.toUiText(): UiText = when (this) {
-        is NetworkError.NoInternet -> UiText.StringResource(R.string.error_no_internet)
-        is NetworkError.PaymentRequired -> UiText.StringResource(R.string.error_payment_required)
-        is NetworkError.RateLimit -> UiText.StringResource(R.string.error_rate_limit)
-        else -> UiText.StringResource(R.string.error_unknown)
+    private fun emitSideEffect(effect: NewsFeedSideEffect) {
+        viewModelScope.launch { _sideEffects.send(effect) }
     }
 }

@@ -13,7 +13,7 @@ val newsFeedModule = module {
 
     // Data
     single { NewsFeedApiService(client = get()) }
-    single { NewsFeedLocalDataSource(dao = get()) }
+    single { NewsFeedLocalDataSource(dao = get(),db = get()) }
     single<NewsFeedRepository> {
         NewsFeedRepositoryImpl(
             remote = get(),

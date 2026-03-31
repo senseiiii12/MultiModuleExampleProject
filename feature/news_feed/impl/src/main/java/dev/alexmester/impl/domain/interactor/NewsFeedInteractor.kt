@@ -22,14 +22,7 @@ class NewsFeedInteractor(
 
     fun getClustersWithPrefsFlow(): Flow<Pair<List<NewsCluster>, UserPreferences>> =
         repository.getClustersFlow()
-            .combine(
-                preferencesDataSource.userPreferences
-                    .drop(1)
-                    .distinctUntilChanged { old, new ->
-                        old.defaultCountry == new.defaultCountry &&
-                        old.defaultLanguage == new.defaultLanguage
-                    }
-            ) { clusters, prefs ->
+            .combine(preferencesDataSource.userPreferences) { clusters, prefs ->
                 clusters to prefs
             }
 
@@ -39,14 +32,13 @@ class NewsFeedInteractor(
     fun getPreferencesFlow(): Flow<UserPreferences> =
         preferencesDataSource.userPreferences
 
-    suspend fun refresh(forceRefresh: Boolean = false): AppResult<Unit> {
+    suspend fun refresh(): AppResult<Unit> {
         if (refreshMutex.isLocked) return AppResult.Success(Unit)
         return refreshMutex.withLock {
             val prefs = preferencesDataSource.userPreferences.first()
             repository.refreshTopNews(
                 country = prefs.defaultCountry,
                 language = prefs.defaultLanguage,
-                forceRefresh = forceRefresh,
             )
         }
     }

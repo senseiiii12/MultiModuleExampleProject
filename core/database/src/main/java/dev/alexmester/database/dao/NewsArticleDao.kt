@@ -19,10 +19,6 @@ interface NewsArticleDao {
     @Query("SELECT * FROM news_articles WHERE id = :id")
     suspend fun getArticleById(id: Long): NewsArticleEntity?
 
-    /**
-     * Для отображения времени последнего обновления в UI.
-     * Возвращает null если кэш пустой.
-     */
     @Query("SELECT MAX(cachedAt) FROM news_articles WHERE sourceScreen = :source")
     suspend fun getLastCachedAt(source: String): Long?
 
@@ -33,15 +29,6 @@ interface NewsArticleDao {
 
     // ── Очистка ───────────────────────────────────────────────────────────────
 
-    @Transaction
-    suspend fun replaceArticles(source: String, articles: List<NewsArticleEntity>) {
-        clearBySource(source)
-        insertArticles(articles)
-    }
-    /**
-     * Вызывается при pull-to-refresh — чистим только конкретный источник,
-     * не затрагивая кэш других экранов.
-     */
     @Query("DELETE FROM news_articles WHERE sourceScreen = :source")
     suspend fun clearBySource(source: String)
 

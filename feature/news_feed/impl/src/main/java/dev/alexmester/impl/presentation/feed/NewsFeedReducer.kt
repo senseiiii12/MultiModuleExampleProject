@@ -1,5 +1,7 @@
 package dev.alexmester.newsfeed.impl.presentation.feed
 
+import dev.alexmester.error.NetworkErrorUiMapper
+import dev.alexmester.models.error.NetworkError
 import dev.alexmester.models.news.NewsCluster
 import dev.alexmester.ui.uitext.UiText
 
@@ -22,30 +24,35 @@ object NewsFeedReducer {
         country: String,
     ): NewsFeedScreenState =
         NewsFeedScreenState.Content(
-        clusters = clusters,
-        country = country,
-        lastCachedAt = lastCachedAt,
-        contentState = ContentState.Idle,
-    )
+            clusters = clusters,
+            country = country,
+            lastCachedAt = lastCachedAt,
+            contentState = ContentState.Idle,
+        )
 
-    fun onError(state: NewsFeedScreenState, message: UiText): NewsFeedScreenState =
-        when (state) {
-            is NewsFeedScreenState.Content -> state.copy(
-                contentState = ContentState.Idle,
-            )
-            else -> NewsFeedScreenState.Error(message)
+    fun onNetworkError(
+        state: NewsFeedScreenState,
+        error: NetworkError,
+        cachedClusters: List<NewsCluster>,
+        lastCachedAt: Long?,
+    ): Pair<NewsFeedScreenState, UiText> {
+        val message = NetworkErrorUiMapper.toUiText(error)
+
+        val newState = when {
+            error is NetworkError.NoInternet && cachedClusters.isNotEmpty() ->
+                NewsFeedScreenState.Content(
+                    clusters = cachedClusters,
+                    lastCachedAt = lastCachedAt,
+                    contentState = ContentState.Offline(lastCachedAt),
+                )
+
+            state is NewsFeedScreenState.Content ->
+                state.copy(contentState = ContentState.Idle)
+
+            else ->
+                NewsFeedScreenState.Error(message)
         }
 
-    fun onOffline(
-        clusters: List<NewsCluster>,
-        lastCachedAt: Long?,
-        message: UiText,
-    ): NewsFeedScreenState = when {
-        clusters.isNotEmpty() -> NewsFeedScreenState.Content(
-            clusters = clusters,
-            lastCachedAt = lastCachedAt,
-            contentState = ContentState.Offline(lastCachedAt),
-        )
-        else -> NewsFeedScreenState.Error(message)
+        return newState to message
     }
 }

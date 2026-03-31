@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +34,8 @@ import dev.alexmester.impl.presentation.components.NewsFeedList
 import dev.alexmester.impl.presentation.components.NewsFeedTopBar
 import dev.alexmester.ui.R
 import dev.alexmester.ui.components.pull_to_refresh_box.LaskPullToRefreshBox
+import dev.alexmester.ui.components.snackbar.LaskTopSnackbarHost
+import dev.alexmester.ui.components.snackbar.showLaskSnackbar
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
 import org.koin.compose.viewmodel.koinViewModel
@@ -51,7 +54,10 @@ fun NewsFeedScreen(
         viewModel.sideEffects.collect { effect ->
             when (effect) {
                 is NewsFeedSideEffect.ShowError ->
-                    snackbarHostState.showSnackbar(effect.message.asString(context))
+                    snackbarHostState.showLaskSnackbar(
+                        message = effect.message.asString(context),
+                        isError = true,
+                    )
                 is NewsFeedSideEffect.NavigateToArticle ->{
 //                    navController.navigate(...)
                 }
@@ -86,8 +92,7 @@ internal fun NewsFeedScreenContent(
 ) {
 
     Scaffold(
-        topBar = { NewsFeedTopBar(state = state) },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        topBar = { NewsFeedTopBar(state = state) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -131,6 +136,14 @@ internal fun NewsFeedScreenContent(
                     }
                 }
             }
+
+            LaskTopSnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+//                    .statusBarsPadding()
+                    .padding(top = 8.dp),
+            )
         }
     }
 }
