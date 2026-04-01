@@ -6,11 +6,16 @@
     <string name="error_payment_required">Дневная квота исчерпана</string>
     <string name="error_rate_limit">Превышен лимит запросов. Попробуйте позже</string>
     <string name="error_unknown">Ошибка загрузки новостей</string>
+    <string name="error_article_not_found">Статья не найдена</string>
 
     <!-- bottombar tabs -->
     <string name="tab_top_news">Тренды</string>
     <string name="tab_explore">Поиск</string>
     <string name="tab_bookmark">Избранное</string>
     <string name="tab_profile">Профиль</string>
+
+    <!-- Bookmark action -->
+    <string name="add_to_bookmark">Добавлено в закладки</string>
+    <string name="removed_from_bookmark">Удалено из закладок</string>
 
 </resources>

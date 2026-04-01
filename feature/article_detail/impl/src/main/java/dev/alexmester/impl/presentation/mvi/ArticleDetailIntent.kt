@@ -1,4 +1,4 @@
-package dev.alexmester.impl.presentation
+package dev.alexmester.impl.presentation.mvi
 
 sealed class ArticleDetailIntent {
     data object Back : ArticleDetailIntent()

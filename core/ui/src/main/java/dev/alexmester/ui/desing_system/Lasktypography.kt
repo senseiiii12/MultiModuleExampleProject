@@ -13,13 +13,13 @@ import androidx.compose.ui.unit.sp
 import dev.alexmester.ui.R
 
 val Inter = FontFamily(
-    Font(R.font.inter_regular,  FontWeight.Normal),
+    Font(R.font.inter_regular, FontWeight.Normal),
     Font(R.font.inter_semibold, FontWeight.SemiBold),
-    Font(R.font.inter_bold,     FontWeight.Bold),
+    Font(R.font.inter_bold, FontWeight.Bold),
 )
 
 val Merriweather = FontFamily(
-    Font(R.font.merriweather_regular,  FontWeight.Normal),
+    Font(R.font.merriweather_regular, FontWeight.Normal),
     Font(R.font.merriweather_semibold, FontWeight.SemiBold),
 )
 
@@ -30,78 +30,86 @@ data class LaskTypography(
     val h1: TextStyle = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Bold,      // 700
-        fontSize   = 48.sp,
+        fontSize = 48.sp,
+        lineHeight = 48.sp
     ),
     val h2: TextStyle = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Bold,      // 700
-        fontSize   = 40.sp,
+        fontSize = 40.sp,
+        lineHeight = 48.sp
     ),
     val h3: TextStyle = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,  // 600
-        fontSize   = 32.sp,
+        fontSize = 32.sp,
+        lineHeight = 40.sp
     ),
     val h4: TextStyle = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,  // 600
-        fontSize   = 24.sp,
+        fontSize = 24.sp,
+        lineHeight = 28.sp
     ),
     val h5: TextStyle = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,  // 600
-        fontSize   = 18.sp,
+        fontSize = 18.sp,
+        lineHeight = 24.sp
     ),
 
     // ── Body ──────────────────────────────────
     val body1SemiBold: TextStyle = TextStyle(
         fontFamily = Merriweather,
         fontWeight = FontWeight.SemiBold,  // 600
-        fontSize   = 16.sp,
+        fontSize = 16.sp,
+        lineHeight = 26.sp
     ),
     val body1: TextStyle = TextStyle(
         fontFamily = Merriweather,
         fontWeight = FontWeight.Normal,    // 400
-        fontSize   = 16.sp,
+        fontSize = 16.sp,
+        lineHeight = 30.sp,
     ),
     val body2SemiBold: TextStyle = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,  // 600
-        fontSize   = 14.sp,
+        fontSize = 14.sp,
+        lineHeight = 20.sp
     ),
     val body2: TextStyle = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Normal,    // 400
-        fontSize   = 14.sp,
+        fontSize = 14.sp,
+        lineHeight = 20.sp
     ),
 
     // ── Buttons ───────────────────────────────
     val button1: TextStyle = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,  // 600
-        fontSize   = 16.sp,
+        fontSize = 16.sp,
+        lineHeight = 24.sp
     ),
     val button2: TextStyle = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,  // 600
-        fontSize   = 14.sp,
+        fontSize = 14.sp,
+        lineHeight = 20.sp
     ),
 
     // ── Footnote ──────────────────────────────
     val footnoteSemiBold: TextStyle = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,  // 600
-        fontSize   = 12.sp,
+        fontSize = 12.sp,
+        lineHeight = 18.sp
     ),
     val footnote: TextStyle = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Normal,    // 400
-        fontSize   = 12.sp,
-    ),
-    val footnoteThin: TextStyle = TextStyle(
-        fontFamily = Inter,
-        fontWeight = FontWeight.Thin,
-        fontSize   = 12.sp,
+        fontSize = 12.sp,
+        lineHeight = 18.sp
     ),
 )
 

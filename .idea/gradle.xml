@@ -38,8 +38,6 @@
             <option value="$PROJECT_DIR$/feature/news_feed" />
             <option value="$PROJECT_DIR$/feature/news_feed/api" />
             <option value="$PROJECT_DIR$/feature/news_feed/impl" />
-            <option value="$PROJECT_DIR$/feature/posts" />
-            <option value="$PROJECT_DIR$/feature/users" />
           </set>
         </option>
       </GradleProjectSettings>

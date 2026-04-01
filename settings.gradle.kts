@@ -34,9 +34,6 @@ include(":core:datastore")
 include(":core:models")
 include(":core:navigation")
 
-include(":feature:posts")
-include(":feature:users")
-
 include(":feature:news_feed:api")
 include(":feature:news_feed:impl")
 

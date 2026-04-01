@@ -29,7 +29,8 @@ object LaskPalette {
     // System
     val Success = Color(0xFF0FAB31)
     val Error = Color(0xFFF72E0A)
-    val Warning = Color(0xFFFE4F32)
+    val WarningDark = Color(0xFFFE664B)
+    val WarningLight = Color(0xFFFE4F32)
     val Informative = Color(0xFF416BD6)
     val Bookmark = Color(0xFFFFBB00)
 

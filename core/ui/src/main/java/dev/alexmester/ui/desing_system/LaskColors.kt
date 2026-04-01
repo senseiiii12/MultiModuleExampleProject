@@ -44,7 +44,7 @@ val LaskLightColors = LaskColors(
     backgroundSecondary = LaskPalette.BackgroundSecondaryLight,
     success = LaskPalette.Success,
     error = LaskPalette.Error,
-    warning = LaskPalette.Warning,
+    warning = LaskPalette.WarningLight,
     informative = LaskPalette.Informative,
     isDark = false,
 )
@@ -59,7 +59,7 @@ val LaskDarkColors = LaskColors(
     backgroundSecondary = LaskPalette.BackgroundSecondaryDark,
     success = LaskPalette.Success,
     error = LaskPalette.Error,
-    warning = LaskPalette.Warning,
+    warning = LaskPalette.WarningDark,
     informative = LaskPalette.Informative,
     isDark = true,
 )

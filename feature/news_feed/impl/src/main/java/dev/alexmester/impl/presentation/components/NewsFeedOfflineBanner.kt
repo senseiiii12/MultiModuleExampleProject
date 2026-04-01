@@ -27,7 +27,7 @@ fun NewsFeedOfflineBanner(
 
     Text(
         text = timeText,
-        style = MaterialTheme.LaskTypography.footnoteSemiBold,
+        style = MaterialTheme.LaskTypography.footnote,
         color = MaterialTheme.LaskColors.textPrimary,
         textAlign = TextAlign.Center,
         modifier = modifier

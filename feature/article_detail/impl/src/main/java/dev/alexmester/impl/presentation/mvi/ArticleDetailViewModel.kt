@@ -1,8 +1,10 @@
-package dev.alexmester.impl.presentation
+package dev.alexmester.impl.presentation.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.alexmester.impl.domain.interactor.ArticleDetailInteractor
+import dev.alexmester.ui.R
+import dev.alexmester.ui.uitext.UiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,7 +50,8 @@ class ArticleDetailViewModel(
         viewModelScope.launch {
             val article = interactor.getArticle(articleId)
             if (article == null) {
-                _state.value = ArticleDetailState.Error("Статья не найдена")
+                val message = UiText.StringResource(R.string.error_article_not_found)
+                _state.value = ArticleDetailState.Error(message)
             } else {
                 _state.value = ArticleDetailState.Content(article = article)
             }
@@ -58,7 +61,7 @@ class ArticleDetailViewModel(
     private fun observeBookmark() {
         interactor.isBookmarked(articleId)
             .onEach { isBookmarked ->
-                _state.update { ArticleDetailReducer.onBookmarkSynced(it, isBookmarked) }
+                _state.update { ArticleDetailReducer.onBookmarkUpdate(it, isBookmarked) }
             }
             .launchIn(viewModelScope)
     }
@@ -81,7 +84,10 @@ class ArticleDetailViewModel(
         val content = _state.value as? ArticleDetailState.Content ?: return
         viewModelScope.launch {
             val nowBookmarked = interactor.toggleBookmark(content.article)
-            val msg = if (nowBookmarked) "Добавлено в закладки" else "Удалено из закладок"
+            val msg = if (nowBookmarked)
+                UiText.StringResource(R.string.add_to_bookmark)
+            else
+                UiText.StringResource(R.string.removed_from_bookmark)
             emitSideEffect(ArticleDetailSideEffect.ShowSnackbar(msg))
         }
     }

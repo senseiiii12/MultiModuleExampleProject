@@ -1,4 +1,4 @@
-package dev.alexmester.impl.presentation
+package dev.alexmester.impl.presentation.mvi
 
 object ArticleDetailReducer {
 
@@ -19,10 +19,7 @@ object ArticleDetailReducer {
         }
     }
 
-    fun onClapAnimationDone(state: ArticleDetailState): ArticleDetailState =
-        (state as? ArticleDetailState.Content)?.copy(isClapAnimating = false) ?: state
-
-    fun onBookmarkSynced(
+    fun onBookmarkUpdate(
         state: ArticleDetailState,
         isBookmarked: Boolean,
     ): ArticleDetailState =

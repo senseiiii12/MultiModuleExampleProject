@@ -1,9 +1,13 @@
 package dev.alexmester.impl.presentation
 
 import android.content.Intent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,10 +24,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alexmester.impl.presentation.components.ArticleDetailBottomBar
 import dev.alexmester.impl.presentation.components.ArticleDetailContent
+import dev.alexmester.impl.presentation.mvi.ArticleDetailIntent
+import dev.alexmester.impl.presentation.mvi.ArticleDetailSideEffect
+import dev.alexmester.impl.presentation.mvi.ArticleDetailState
+import dev.alexmester.impl.presentation.mvi.ArticleDetailViewModel
 import dev.alexmester.ui.components.snackbar.LaskTopSnackbarHost
 import dev.alexmester.ui.components.snackbar.showLaskSnackbar
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -43,10 +53,9 @@ fun ArticleDetailScreen(
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
             when (effect) {
-                ArticleDetailSideEffect.NavigateBack -> onBack()
+                is ArticleDetailSideEffect.NavigateBack -> onBack()
                 is ArticleDetailSideEffect.ShowSnackbar ->
-                    snackbarHostState.showLaskSnackbar(effect.message)
-
+                    snackbarHostState.showLaskSnackbar(effect.message.asString(context))
                 is ArticleDetailSideEffect.ShareUrl -> {
                     val intent = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
@@ -72,31 +81,40 @@ internal fun ArticleDetailScreen(
     onIntent: (ArticleDetailIntent) -> Unit,
     snackbarHostState: SnackbarHostState,
 ) {
+    val hazeState = rememberHazeState()
+
     Scaffold(
+        contentWindowInsets = WindowInsets(top = 0),
         bottomBar = {
-            ArticleDetailBottomBar(
-                state = state.contentOrNull ,
-                onIntent = onIntent,
-            )
+            val content = state as? ArticleDetailState.Content
+            if (content != null) {
+                ArticleDetailBottomBar(
+                    isBookmarked = content.isBookmarked,
+                    clapCount = content.clapCount,
+                    isClapAnimating = content.isClapAnimating,
+                    hazeState = hazeState,
+                    onIntent = onIntent,
+                )
+            }
         }
     ) { paddingValues ->
-
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .hazeSource(hazeState)
         ) {
             when (val state = state) {
                 ArticleDetailState.Loading -> {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
-                        color = MaterialTheme.LaskColors.brand_blue,
+                        color = MaterialTheme.LaskColors.brand_blue10,
+                        trackColor = MaterialTheme.LaskColors.brand_blue
                     )
                 }
 
                 is ArticleDetailState.Error -> {
                     Text(
-                        text = state.message,
+                        text = state.message.asString(),
                         modifier = Modifier.align(Alignment.Center),
                         style = MaterialTheme.LaskTypography.body1,
                         color = MaterialTheme.LaskColors.error,
@@ -105,8 +123,8 @@ internal fun ArticleDetailScreen(
 
                 is ArticleDetailState.Content -> {
                     ArticleDetailContent(
-                        state = state,
-                        onIntent = onIntent,
+                        article = state.article,
+                        bottomPadding = paddingValues.calculateBottomPadding()
                     )
                 }
             }
@@ -115,6 +133,7 @@ internal fun ArticleDetailScreen(
                 hostState = snackbarHostState,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
+                    .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(top = 8.dp),
             )
         }

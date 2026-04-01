@@ -4,12 +4,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -17,20 +25,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.alexmester.impl.presentation.ArticleDetailIntent
-import dev.alexmester.impl.presentation.ArticleDetailState
+import dev.alexmester.models.news.NewsArticle
 import dev.alexmester.ui.desing_system.LaskColors
-import dev.alexmester.ui.desing_system.LaskPalette
 import dev.alexmester.ui.desing_system.LaskTypography
 
 @Composable
 fun ArticleDetailContent(
-    state: ArticleDetailState.Content,
-    onIntent: (ArticleDetailIntent) -> Unit,
+    article: NewsArticle,
+    bottomPadding: Dp,
 ) {
-    val article = state.article
-
     Box(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.LaskColors.backgroundPrimary)
@@ -90,43 +95,14 @@ fun ArticleDetailContent(
                     text = displayText,
                     style = MaterialTheme.LaskTypography.body1,
                     color = MaterialTheme.LaskColors.textPrimary,
-                    lineHeight = MaterialTheme.LaskTypography.body1.fontSize * 1.6,
                 )
 
-                // Sentiment
                 article.sentiment?.let { sentiment ->
                     Spacer(modifier = Modifier.height(16.dp))
-                    val (sentimentLabel, sentimentColor) = when {
-                        sentiment > 0.1 -> "Позитивная тональность" to LaskPalette.Sentiment_Positive
-                        sentiment < -0.1 -> "Негативная тональность" to LaskPalette.Sentiment_Negative
-                        else -> "Нейтральная тональность" to LaskPalette.Sentiment_Neutral
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    ) {
-                        Text("●", color = sentimentColor, style = MaterialTheme.LaskTypography.footnote)
-                        Text(
-                            text = sentimentLabel,
-                            style = MaterialTheme.LaskTypography.footnote,
-                            color = MaterialTheme.LaskColors.textSecondary,
-                        )
-                    }
+                    SentimentRow(sentiment = sentiment)
                 }
-
-                // Bottom padding for bottom bar
-                Spacer(modifier = Modifier.height(96.dp))
+                Spacer(modifier = Modifier.height(bottomPadding + 16.dp))
             }
         }
-
-        // ── Top status bar insets spacer ───────────────────────────────
-        // (hero image goes under status bar via edge-to-edge)
-
-        // ── Bottom bar ────────────────────────────────────────────────
-        ArticleDetailBottomBar(
-            state = state,
-            onIntent = onIntent,
-            modifier = Modifier.align(Alignment.BottomCenter),
-        )
     }
 }

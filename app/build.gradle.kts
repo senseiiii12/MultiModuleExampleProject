@@ -40,8 +40,6 @@ dependencies {
     implementation(project(":feature:news_feed:impl"))
     implementation(project(":feature:article_detail:impl"))
 
-    implementation(project(":feature:posts"))
-    implementation(project(":feature:users"))
 
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("androidx.core:core-splashscreen:1.0.1")

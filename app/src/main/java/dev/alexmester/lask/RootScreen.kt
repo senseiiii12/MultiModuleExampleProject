@@ -43,7 +43,7 @@ fun RootScreen(
     Scaffold(
         modifier = Modifier,
         bottomBar = {
-            if (false) {
+            if (true) {
                 AppBottomBar(
                     navController = navController,
                     hazeState = hazeState,

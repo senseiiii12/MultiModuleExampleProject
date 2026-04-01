@@ -6,11 +6,17 @@
     <string name="error_payment_required">Daily quota exceeded</string>
     <string name="error_rate_limit">Request limit exceeded. Try again later</string>
     <string name="error_unknown">Failed to load news</string>
+    <string name="error_article_not_found">Article not found</string>
 
     <!-- bottombar tabs -->
     <string name="tab_top_news">Trends</string>
     <string name="tab_explore">Explore</string>
     <string name="tab_bookmark">Bookmark</string>
     <string name="tab_profile">Profile</string>
+
+    <!-- Bookmark action -->
+    <string name="add_to_bookmark">Added to bookmarks</string>
+    <string name="removed_from_bookmark">Removed from bookmarks</string>
+
 
 </resources>

@@ -2,10 +2,13 @@ package dev.alexmester.impl.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,10 +27,13 @@ fun ArticleDetailHeaderImage(
     modifier: Modifier = Modifier,
     image: String?,
 ) {
+
+    val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(320.dp)
+            .height(280.dp + statusBarHeight)
     ) {
         if (image != null) {
             AsyncImage(
@@ -62,7 +68,7 @@ fun ArticleDetailHeaderImage(
                             Color.Transparent,
                             MaterialTheme.LaskColors.backgroundPrimary,
                         ),
-                        startY = 160f,
+                        startY = 300f,
                     )
                 )
         )

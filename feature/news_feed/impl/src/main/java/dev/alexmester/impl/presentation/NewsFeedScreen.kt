@@ -1,9 +1,16 @@
 package dev.alexmester.newsfeed.impl.presentation.feed
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -20,10 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.Insets
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alexmester.impl.presentation.NewsFeedViewModel
 import dev.alexmester.impl.presentation.components.NewsFeedList
 import dev.alexmester.impl.presentation.components.NewsFeedTopBar
+import dev.alexmester.newsfeed.impl.presentation.components.NewsFeedOfflineBanner
 import dev.alexmester.ui.components.pull_to_refresh_box.LaskPullToRefreshBox
 import dev.alexmester.ui.components.snackbar.LaskTopSnackbarHost
 import dev.alexmester.ui.components.snackbar.showLaskSnackbar
@@ -44,11 +53,11 @@ fun NewsFeedScreen(
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
             when (effect) {
-                is NewsFeedSideEffect.ShowError ->
-                    snackbarHostState.showLaskSnackbar(
-                        message = effect.message.asString(context),
-                        isError = true,
-                    )
+                is NewsFeedSideEffect.ShowError ->{}
+//                    snackbarHostState.showLaskSnackbar(
+//                        message = effect.message.asString(context),
+//                        isError = true,
+//                    )
 
                 is NewsFeedSideEffect.NavigateToArticle -> {
                     onArticleClick(effect.articleId, effect.articleUrl)
@@ -120,13 +129,24 @@ internal fun NewsFeedScreen(
                         onRefresh = onRefresh,
                         state = stateRefreshBox,
                     ) {
-                        NewsFeedList(
-                            modifier = Modifier,
-                            state = currentState,
-                            onClickArticle = { artilceId, arlicteUrl ->
-                                onArticleClick(artilceId, arlicteUrl)
+                        Column{
+                            AnimatedVisibility(visible = state.isOffline) {
+                                if (state.contentState is ContentState.Offline){
+                                    NewsFeedOfflineBanner(
+                                        lastCachedAt = state.contentState.lastCachedAt
+                                    )
+                                }
                             }
-                        )
+                            NewsFeedList(
+                                modifier = Modifier,
+                                state = currentState,
+                                bottomPadding = paddingValues.calculateBottomPadding(),
+                                onClickArticle = { artilceId, arlicteUrl ->
+                                    onArticleClick(artilceId, arlicteUrl)
+                                }
+                            )
+
+                        }
                     }
                 }
             }

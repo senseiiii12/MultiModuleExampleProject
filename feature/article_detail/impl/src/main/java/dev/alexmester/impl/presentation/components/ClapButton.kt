@@ -31,11 +31,16 @@ fun ClapButton(
     onClick: () -> Unit,
 ) {
     val scale by animateFloatAsState(
-        targetValue = if (isAnimating) 1.4f else 1f,
+        targetValue = if (isAnimating) 1.25f else 1f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = "clapScale",
     )
-    val iconColor by animateColorAsState(
-        targetValue = if (count > 0) LaskPalette.Brand_Blue else MaterialTheme.LaskColors.textPrimary,
+    val icon = if (isAnimating) R.drawable.ic_clap_filled else R.drawable.ic_clap_outline
+
+    val tint by animateColorAsState(
+        targetValue = if (count > 0) LaskPalette.Brand_Blue
+        else MaterialTheme.LaskColors.textPrimary,
+        label = "clapColor",
     )
 
     Row(
@@ -44,9 +49,9 @@ fun ClapButton(
     ) {
         IconButton(onClick = onClick) {
             Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ic_clap_filled),
+                imageVector = ImageVector.vectorResource(icon),
                 contentDescription = null,
-                tint = iconColor,
+                tint = tint,
                 modifier = Modifier
                     .size(24.dp)
                     .graphicsLayer {
@@ -58,7 +63,7 @@ fun ClapButton(
         if (count > 0) {
             Text(
                 text = count.toString(),
-                style = MaterialTheme.LaskTypography.button1,
+                style = MaterialTheme.LaskTypography.footnoteSemiBold,
                 color = MaterialTheme.LaskColors.textSecondary,
             )
         }
