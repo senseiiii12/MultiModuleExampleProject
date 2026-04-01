@@ -3,6 +3,7 @@ package dev.alexmester.impl.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import dev.alexmester.api.navigation.ArticleDetailApi
 import dev.alexmester.api.navigation.FeedRoute
 import dev.alexmester.api.navigation.NewsFeedApi
 import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedScreen
@@ -15,7 +16,9 @@ import dev.alexmester.newsfeed.impl.presentation.feed.NewsFeedScreen
  * single<NewsFeedApi> { NewsFeedImpl() }
  * ```
  */
-class NewsFeedImpl : NewsFeedApi {
+class NewsFeedImpl(
+    val articleDetailApi: ArticleDetailApi,
+) : NewsFeedApi {
 
     override fun feedRoute() = FeedRoute
 
@@ -24,7 +27,16 @@ class NewsFeedImpl : NewsFeedApi {
         navController: NavHostController,
     ) {
         navGraphBuilder.composable<FeedRoute> {
-            NewsFeedScreen()
+            NewsFeedScreen(
+                onArticleClick = { id, url ->
+                    navController.navigate(
+                        articleDetailApi.articleDetailRoute(
+                            articleId = id,
+                            articleUrl = url
+                        )
+                    )
+                }
+            )
         }
     }
 }

@@ -29,6 +29,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import dev.alexmester.api.navigation.ArticleDetailRoute
 import dev.alexmester.impl.presentation.NewsFeedViewModel
 import dev.alexmester.impl.presentation.components.NewsFeedList
 import dev.alexmester.impl.presentation.components.NewsFeedTopBar
@@ -44,6 +46,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun NewsFeedScreen(
     viewModel: NewsFeedViewModel = koinViewModel(),
+    onArticleClick: (articleId: Long, articleUrl: String) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -58,8 +61,9 @@ fun NewsFeedScreen(
                         message = effect.message.asString(context),
                         isError = true,
                     )
-                is NewsFeedSideEffect.NavigateToArticle ->{
-//                    navController.navigate(...)
+
+                is NewsFeedSideEffect.NavigateToArticle -> {
+                    onArticleClick(effect.articleId, effect.articleUrl)
                 }
             }
         }
@@ -72,10 +76,12 @@ fun NewsFeedScreen(
         snackbarHostState = snackbarHostState,
         onRefresh = { viewModel.handleIntent(NewsFeedIntent.Refresh) },
         onArticleClick = { articleId, articleUrl ->
-            viewModel.handleIntent(NewsFeedIntent.ArticleClick(
-                articleId = articleId,
-                articleUrl = articleUrl
-            ))
+            viewModel.handleIntent(
+                NewsFeedIntent.ArticleClick(
+                    articleId = articleId,
+                    articleUrl = articleUrl
+                )
+            )
         }
     )
 }
@@ -141,12 +147,12 @@ internal fun NewsFeedScreenContent(
                 hostState = snackbarHostState,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-//                    .statusBarsPadding()
                     .padding(top = 8.dp),
             )
         }
     }
 }
+
 fun countryToFlag(countryCode: String): String {
     return countryCode
         .uppercase()

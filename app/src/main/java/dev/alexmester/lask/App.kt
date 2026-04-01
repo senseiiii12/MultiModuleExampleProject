@@ -12,12 +12,15 @@ import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.ErrorResult
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
+import dev.alexmester.api.navigation.ArticleDetailApi
 import dev.alexmester.api.navigation.NewsFeedApi
 import dev.alexmester.database.di.databaseModule
 import dev.alexmester.datastore.di.dataStoreModule
 import dev.alexmester.datastore.util.DeviceLocaleProvider
 import dev.alexmester.datastore.util.LocaleChangeObserver
+import dev.alexmester.impl.di.articleDetailModule
 import dev.alexmester.impl.di.newsFeedModule
+import dev.alexmester.impl.navigation.ArticleDetailImpl
 import dev.alexmester.impl.navigation.NewsFeedImpl
 import dev.alexmester.lask.welcome_screen.SplashViewModel
 import dev.alexmester.network.di.networkModule
@@ -34,9 +37,9 @@ import org.koin.dsl.module
 
 
 val featuresModule = module {
-    single<NewsFeedApi> { NewsFeedImpl() }
+    single<NewsFeedApi> { NewsFeedImpl(articleDetailApi = get()) }
     // single<ExploreApi> { ExploreImpl() }
-    // single<ArticleDetailApi> { ArticleDetailImpl() }
+    single<ArticleDetailApi> { ArticleDetailImpl() }
     // single<BookmarksApi> { BookmarksImpl() }
     // single<SettingsApi> { SettingsImpl() }
     // single<SearchApi> { SearchImpl() }
@@ -93,6 +96,7 @@ class App : Application(), SingletonImageLoader.Factory {
 
                 // Feature DI
                 newsFeedModule,
+                articleDetailModule,
 
                 // Feature Navigation
                 featuresModule,

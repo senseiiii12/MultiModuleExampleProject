@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":core:models"))
 
     implementation(project(":feature:news_feed:impl"))
+    implementation(project(":feature:article_detail:impl"))
 
     implementation(project(":feature:posts"))
     implementation(project(":feature:users"))

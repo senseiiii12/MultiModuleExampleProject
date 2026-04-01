@@ -14,6 +14,7 @@ android {
 
 dependencies {
     api(project(":feature:news_feed:api"))
+    implementation(project(":feature:article_detail:api"))
 
     implementation(project(":core:network"))
     implementation(project(":core:database"))

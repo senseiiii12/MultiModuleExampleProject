@@ -10,10 +10,6 @@ import java.time.ZoneOffset
 
 class NewsFeedApiService(private val client: HttpClient) {
 
-    /**
-     * Топ новостей по стране — используется для главной ленты.
-     * [maxNewsPerCluster] — количество статей на одно событие (кластер).
-     */
     suspend fun getTopNews(
         sourceCountry: String,
         language: String? = null,

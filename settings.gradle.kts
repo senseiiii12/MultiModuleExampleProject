@@ -36,5 +36,9 @@ include(":core:navigation")
 
 include(":feature:posts")
 include(":feature:users")
+
 include(":feature:news_feed:api")
 include(":feature:news_feed:impl")
+
+include(":feature:article_detail:api")
+include(":feature:article_detail:impl")

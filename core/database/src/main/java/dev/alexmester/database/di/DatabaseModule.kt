@@ -19,4 +19,5 @@ val databaseModule = module {
 
     single { get<AppDatabase>().newsArticleDao() }
     single { get<AppDatabase>().bookmarkDao() }
+    single { get<AppDatabase>().clapDao() }
 }
