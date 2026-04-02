@@ -1,7 +1,6 @@
 package dev.alexmester.impl.presentation
 
 import android.content.Intent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -67,7 +66,7 @@ fun ArticleDetailScreen(
         }
     }
 
-    ArticleDetailScreen(
+    ArticleDetailScreenContent(
         state = state,
         onIntent = viewModel::handleIntent,
         snackbarHostState = snackbarHostState
@@ -75,7 +74,7 @@ fun ArticleDetailScreen(
 }
 
 @Composable
-internal fun ArticleDetailScreen(
+internal fun ArticleDetailScreenContent(
     modifier: Modifier = Modifier,
     state: ArticleDetailState,
     onIntent: (ArticleDetailIntent) -> Unit,

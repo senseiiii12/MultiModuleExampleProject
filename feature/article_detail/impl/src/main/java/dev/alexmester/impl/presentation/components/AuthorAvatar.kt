@@ -27,7 +27,7 @@ fun AuthorAvatar(
     ) {
         Text(
             text = char,
-            style = MaterialTheme.LaskTypography.footnoteSemiBold,
+            style = MaterialTheme.LaskTypography.body2SemiBold,
             color = MaterialTheme.LaskColors.brand_blue,
         )
     }

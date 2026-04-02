@@ -3,14 +3,15 @@ package dev.alexmester.newsfeed.impl.presentation.feed
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.captionBar
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -27,16 +28,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.Insets
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.alexmester.impl.presentation.NewsFeedViewModel
+import dev.alexmester.impl.presentation.mvi.NewsFeedViewModel
 import dev.alexmester.impl.presentation.components.NewsFeedList
 import dev.alexmester.impl.presentation.components.NewsFeedTopBar
 import dev.alexmester.newsfeed.impl.presentation.components.NewsFeedOfflineBanner
+import dev.alexmester.ui.components.error_screen.LaskErrorScreen
 import dev.alexmester.ui.components.pull_to_refresh_box.LaskPullToRefreshBox
 import dev.alexmester.ui.components.snackbar.LaskTopSnackbarHost
 import dev.alexmester.ui.components.snackbar.showLaskSnackbar
 import dev.alexmester.ui.desing_system.LaskColors
+import dev.alexmester.ui.desing_system.LaskTypography
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -53,11 +55,12 @@ fun NewsFeedScreen(
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
             when (effect) {
-                is NewsFeedSideEffect.ShowError ->{}
-//                    snackbarHostState.showLaskSnackbar(
-//                        message = effect.message.asString(context),
-//                        isError = true,
-//                    )
+                is NewsFeedSideEffect.ShowError -> {
+                    snackbarHostState.showLaskSnackbar(
+                        message = effect.message.asString(context),
+                        isError = true,
+                    )
+                }
 
                 is NewsFeedSideEffect.NavigateToArticle -> {
                     onArticleClick(effect.articleId, effect.articleUrl)
@@ -66,7 +69,7 @@ fun NewsFeedScreen(
         }
     }
 
-    NewsFeedScreen(
+    NewsFeedScreenContent(
         modifier = Modifier,
         state = state,
         stateRefreshBox = stateRefreshBox,
@@ -85,7 +88,7 @@ fun NewsFeedScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun NewsFeedScreen(
+internal fun NewsFeedScreenContent(
     modifier: Modifier,
     state: NewsFeedScreenState,
     stateRefreshBox: PullToRefreshState,
@@ -114,11 +117,11 @@ internal fun NewsFeedScreen(
                 }
 
                 is NewsFeedScreenState.Error -> {
-                    Text(
-                        text = currentState.message.asString(),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.LaskColors.error,
-                        modifier = Modifier.align(Alignment.Center),
+                    LaskErrorScreen(
+                        modifier = Modifier,
+                        errorMessage = currentState.message.asString(),
+                        isRetrying = currentState.isRefreshing,
+                        onRetry = onRefresh
                     )
                 }
 
@@ -129,9 +132,9 @@ internal fun NewsFeedScreen(
                         onRefresh = onRefresh,
                         state = stateRefreshBox,
                     ) {
-                        Column{
+                        Column {
                             AnimatedVisibility(visible = state.isOffline) {
-                                if (state.contentState is ContentState.Offline){
+                                if (state.contentState is ContentState.Offline) {
                                     NewsFeedOfflineBanner(
                                         lastCachedAt = state.contentState.lastCachedAt
                                     )
@@ -145,7 +148,6 @@ internal fun NewsFeedScreen(
                                     onArticleClick(artilceId, arlicteUrl)
                                 }
                             )
-
                         }
                     }
                 }

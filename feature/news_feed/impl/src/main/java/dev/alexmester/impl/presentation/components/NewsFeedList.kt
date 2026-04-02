@@ -51,6 +51,7 @@ fun NewsFeedList(
                     publishDate = article.publishDate,
                     authors = article.authors,
                     sentiment = article.sentiment,
+                    articleId = article.id,
                     onBookmarkToggle = {},
                     onClick = { onClickArticle(article.id, article.url) }
                 )

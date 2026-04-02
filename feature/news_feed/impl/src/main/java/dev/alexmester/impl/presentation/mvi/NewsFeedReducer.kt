@@ -13,8 +13,14 @@ object NewsFeedReducer {
                 is NewsFeedScreenState.Content -> state.copy(
                     contentState = ContentState.Refreshing,
                 )
+
+                is NewsFeedScreenState.Error -> state.copy(
+                    isRefreshing = true,
+                )
+
                 else -> state
             }
+
             else -> state
         }
 
@@ -49,8 +55,10 @@ object NewsFeedReducer {
             state is NewsFeedScreenState.Content ->
                 state.copy(contentState = ContentState.Idle)
 
-            else ->
-                NewsFeedScreenState.Error(message)
+            else -> NewsFeedScreenState.Error(
+                message = message,
+                isRefreshing = false,
+            )
         }
 
         return newState to message

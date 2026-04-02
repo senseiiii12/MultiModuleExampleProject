@@ -84,6 +84,7 @@ private fun NewsArticleCardData.Composable(
         publishDate = publishDate,
         authors = author,
         sentiment = sentiment,
+        articleId = 1L,
         selectionMode = selectionMode,
         isKept = isKept,
         modifier = modifier.fillMaxWidth(),

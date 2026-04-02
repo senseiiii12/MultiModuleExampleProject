@@ -42,10 +42,10 @@ val LaskLightColors = LaskColors(
     brand_blue10 = LaskPalette.Brand_BlueLight10,
     backgroundPrimary = LaskPalette.BackgroundPrimaryLight,
     backgroundSecondary = LaskPalette.BackgroundSecondaryLight,
-    success = LaskPalette.Success,
-    error = LaskPalette.Error,
+    success = LaskPalette.SuccessLight,
+    error = LaskPalette.ErrorLight,
     warning = LaskPalette.WarningLight,
-    informative = LaskPalette.Informative,
+    informative = LaskPalette.InformativeLight,
     isDark = false,
 )
 
@@ -57,10 +57,10 @@ val LaskDarkColors = LaskColors(
     brand_blue10 = LaskPalette.Brand_BlueDark10,
     backgroundPrimary = LaskPalette.BackgroundPrimaryDark,
     backgroundSecondary = LaskPalette.BackgroundSecondaryDark,
-    success = LaskPalette.Success,
-    error = LaskPalette.Error,
+    success = LaskPalette.SuccessDark,
+    error = LaskPalette.ErrorDark,
     warning = LaskPalette.WarningDark,
-    informative = LaskPalette.Informative,
+    informative = LaskPalette.InformativeDark,
     isDark = true,
 )
 

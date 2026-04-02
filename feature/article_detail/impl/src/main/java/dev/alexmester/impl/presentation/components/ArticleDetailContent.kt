@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import dev.alexmester.models.news.NewsArticle
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
+import dev.alexmester.ui.transition.sharedElementIfAvailable
 
 @Composable
 fun ArticleDetailContent(
@@ -45,7 +46,10 @@ fun ArticleDetailContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            ArticleDetailHeaderImage(image = article.image)
+            ArticleDetailHeaderImage(
+                image = article.image,
+                articleId = article.id
+            )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -60,6 +64,7 @@ fun ArticleDetailContent(
                     )
                 }
                 Text(
+                    modifier = Modifier.sharedElementIfAvailable(key = "title_${article.id}"),
                     text = article.title,
                     style = MaterialTheme.LaskTypography.h4,
                     color = MaterialTheme.LaskColors.textPrimary,

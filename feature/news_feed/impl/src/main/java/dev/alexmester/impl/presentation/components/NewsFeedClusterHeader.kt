@@ -20,7 +20,7 @@ fun NewsFeedClusterHeader(
 ) {
     Text(
         text = title,
-        style = MaterialTheme.LaskTypography.body1,
+        style = MaterialTheme.LaskTypography.body2,
         color = MaterialTheme.LaskColors.textPrimary,
         maxLines = 2,
         overflow = TextOverflow.Ellipsis,

@@ -5,7 +5,10 @@ import dev.alexmester.ui.uitext.UiText
 
 sealed interface NewsFeedScreenState {
     data object Loading : NewsFeedScreenState
-    data class Error(val message: UiText) : NewsFeedScreenState
+    data class Error(
+        val message: UiText,
+        val isRefreshing: Boolean = false,
+        ) : NewsFeedScreenState
     data class Content(
         val clusters: List<NewsCluster>,
         val country: String = "en",
@@ -20,8 +23,7 @@ sealed interface ContentState {
     data class Offline(val lastCachedAt: Long?) : ContentState
 }
 
-val NewsFeedScreenState.isContent: Boolean
-    get() = this is NewsFeedScreenState.Content
+
 
 val NewsFeedScreenState.contentOrNull: NewsFeedScreenState.Content?
     get() = this as? NewsFeedScreenState.Content

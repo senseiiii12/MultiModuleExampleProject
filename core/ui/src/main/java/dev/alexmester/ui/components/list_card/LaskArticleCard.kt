@@ -1,6 +1,9 @@
 package dev.alexmester.ui.components.list_card
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
@@ -33,8 +36,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -46,6 +47,7 @@ import coil3.request.crossfade
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskPalette
 import dev.alexmester.ui.desing_system.LaskTypography
+import dev.alexmester.ui.transition.sharedElementIfAvailable
 
 
 @Composable
@@ -57,6 +59,7 @@ fun LaskArticleCard(
     publishDate: String,
     authors: List<String?>,
     sentiment: Double?,
+    articleId: Long,
     selectionMode: Boolean = false,
     isKept: Boolean = true,
     onBookmarkToggle: () -> Unit = {},
@@ -79,13 +82,16 @@ fun LaskArticleCard(
                 .fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
+
             Text(
                 text = title,
                 style = MaterialTheme.LaskTypography.h5,
                 color = MaterialTheme.LaskColors.textPrimary,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(bottom = 8.dp),
+                modifier = Modifier
+                    .sharedElementIfAvailable(key = "title_$articleId")
+                    .padding(bottom = 8.dp),
             )
 
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -119,12 +125,16 @@ fun LaskArticleCard(
             }
         }
 
-        ArticleThumbnail(imageUrl = imageUrl, title = title)
+        ArticleImage(
+            imageUrl = imageUrl,
+            title = title,
+            articleId = articleId,
+        )
 
         AnimatedVisibility(
             visible = selectionMode,
             enter = fadeIn() + scaleIn(initialScale = 0.7f),
-            exit  = fadeOut() + scaleOut(targetScale = 0.7f),
+            exit = fadeOut() + scaleOut(targetScale = 0.7f),
         ) {
             BookmarkIcon(
                 isKept = isKept,
@@ -134,13 +144,16 @@ fun LaskArticleCard(
     }
 }
 
-
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun ArticleThumbnail(
+private fun ArticleImage(
     imageUrl: String?,
-    title: String
+    title: String,
+    articleId: Long,
 ) {
+
     val sizeMod = Modifier
+        .sharedElementIfAvailable(key = "image_$articleId")
         .width(112.dp)
         .height(80.dp)
         .clip(RoundedCornerShape(8.dp))
@@ -149,21 +162,21 @@ private fun ArticleThumbnail(
         SubcomposeAsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUrl)
-                .crossfade(true)
+                .crossfade(false)
                 .build(),
             contentDescription = title,
             contentScale = ContentScale.Crop,
             modifier = sizeMod,
-            loading = { ThumbnailPlaceholder() },
-            error   = { ThumbnailPlaceholder() },
+            loading = { ArticleImagePlaceholder() },
+            error = { ArticleImagePlaceholder() },
         )
     } else {
-        ThumbnailPlaceholder(modifier = sizeMod)
+        ArticleImagePlaceholder(modifier = sizeMod)
     }
 }
 
 @Composable
-private fun ThumbnailPlaceholder(modifier: Modifier = Modifier) {
+private fun ArticleImagePlaceholder(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .size(80.dp)
@@ -196,7 +209,7 @@ private fun BookmarkIcon(
         tint = LaskPalette.Bookmark,
         modifier = Modifier
             .size(24.dp)
-            .graphicsLayer{
+            .graphicsLayer {
                 scaleX = scale
                 scaleY = scale
             }
@@ -207,9 +220,9 @@ private fun BookmarkIcon(
 @Composable
 private fun SentimentDot(sentiment: Double) {
     val color = when {
-        sentiment > 0.1  -> LaskPalette.Sentiment_Positive
+        sentiment > 0.1 -> LaskPalette.Sentiment_Positive
         sentiment < -0.1 -> LaskPalette.Sentiment_Negative
-        else             -> LaskPalette.Sentiment_Neutral
+        else -> LaskPalette.Sentiment_Neutral
     }
     Text(
         text = "●",

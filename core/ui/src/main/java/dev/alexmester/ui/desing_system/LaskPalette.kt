@@ -27,11 +27,18 @@ object LaskPalette {
     val BackgroundSecondaryDark = Color(0xFF261815)
 
     // System
-    val Success = Color(0xFF0FAB31)
-    val Error = Color(0xFFF72E0A)
+    val SuccessDark = Color(0xFF69C47D)
+    val SuccessLight = Color(0xFF57BD6D)
+
+    val ErrorDark = Color(0xFFE9664F)
+    val ErrorLight = Color(0xFFE65139)
+
     val WarningDark = Color(0xFFFE664B)
     val WarningLight = Color(0xFFFE4F32)
-    val Informative = Color(0xFF416BD6)
+
+    val InformativeDark = Color(0xFF416BD6)
+    val InformativeLight = Color(0xFF2D5BD0)
+
     val Bookmark = Color(0xFFFFBB00)
 
     //Sentiment
