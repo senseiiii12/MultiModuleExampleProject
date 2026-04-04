@@ -16,3 +16,6 @@ sealed interface ArticleDetailState {
 
 val ArticleDetailState.contentOrNull: ArticleDetailState.Content?
     get() = this as? ArticleDetailState.Content
+
+val ArticleDetailState.isContent: Boolean
+    get() = this is ArticleDetailState.Content

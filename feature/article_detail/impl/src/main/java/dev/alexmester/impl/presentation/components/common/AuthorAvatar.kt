@@ -1,4 +1,4 @@
-package dev.alexmester.impl.presentation.components
+package dev.alexmester.impl.presentation.components.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,11 +16,11 @@ import dev.alexmester.ui.desing_system.LaskTypography
 
 @Composable
 fun AuthorAvatar(
+    modifier: Modifier = Modifier,
     char: String,
 ) {
     Box(
-        modifier = Modifier
-            .size(48.dp)
+        modifier = modifier
             .clip(CircleShape)
             .background(MaterialTheme.LaskColors.brand_blue10),
         contentAlignment = Alignment.Center,

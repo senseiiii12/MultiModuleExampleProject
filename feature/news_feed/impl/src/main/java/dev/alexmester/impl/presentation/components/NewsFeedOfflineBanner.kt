@@ -1,17 +1,30 @@
 package dev.alexmester.newsfeed.impl.presentation.components
 
+import android.content.Context
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.os.ConfigurationCompat
+import dev.alexmester.ui.R
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
+import dev.alexmester.ui.uitext.UiText
+import dev.alexmester.utils.DateFormatter
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Date
 import java.util.Locale
 
@@ -20,13 +33,17 @@ fun NewsFeedOfflineBanner(
     lastCachedAt: Long?,
     modifier: Modifier = Modifier,
 ) {
-    val timeText = lastCachedAt?.let {
-        val sdf = SimpleDateFormat("HH:mm dd.MM.yyyy", Locale.getDefault())
-        "Offline · updated at ${sdf.format(Date(it))}"
-    } ?: "Offline"
+    val timeText: UiText = remember(lastCachedAt) {
+        if (lastCachedAt != null) {
+            val formatted = DateFormatter.formatCachedAtDate(lastCachedAt)
+            UiText.StringResource(R.string.offline_banner_with_time, arrayOf(formatted))
+        } else {
+            UiText.StringResource(R.string.offline_banner)
+        }
+    }
 
     Text(
-        text = timeText,
+        text = timeText.asString(),
         style = MaterialTheme.LaskTypography.footnote,
         color = MaterialTheme.LaskColors.textPrimary,
         textAlign = TextAlign.Center,
@@ -36,3 +53,4 @@ fun NewsFeedOfflineBanner(
             .padding(8.dp),
     )
 }
+

@@ -1,4 +1,4 @@
-package dev.alexmester.impl.presentation.components
+package dev.alexmester.ui.components.buttons
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -26,7 +26,7 @@ import dev.alexmester.ui.desing_system.LaskPalette
 import dev.alexmester.ui.desing_system.LaskTypography
 
 @Composable
-fun ClapButton(
+fun LaskClapButton(
     count: Int,
     isAnimating: Boolean,
     onClick: () -> Unit,

@@ -25,5 +25,17 @@
 
     <string name="reading_article">Read</string>
 
+    <!-- Offline Banner -->
+    <string name="offline_banner_with_time">Offline · updated at %1$s</string>
+    <string name="offline_banner">Offline</string>
+
+    <!-- Sentiment Text -->
+    <string name="sentiment_title">Sentiment</string>
+    <string name="sentiment_positive">Positive</string>
+    <string name="sentiment_neutral">Neutral</string>
+    <string name="sentiment_negative">Negative</string>
+
+    <!-- Common -->
+    <string name="unknown_author">Unknown author</string>
 
 </resources>

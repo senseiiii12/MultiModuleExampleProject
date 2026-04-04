@@ -21,13 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.alexmester.impl.presentation.components.ArticleDetailBottomBar
+import dev.alexmester.impl.presentation.components.bottom_bar.ArticleDetailBottomBar
 import dev.alexmester.impl.presentation.components.ArticleDetailContent
 import dev.alexmester.impl.presentation.mvi.ArticleDetailIntent
 import dev.alexmester.impl.presentation.mvi.ArticleDetailSideEffect
 import dev.alexmester.impl.presentation.mvi.ArticleDetailState
 import dev.alexmester.impl.presentation.mvi.ArticleDetailViewModel
 import dev.alexmester.impl.presentation.mvi.contentOrNull
+import dev.alexmester.impl.presentation.mvi.isContent
 import dev.alexmester.ui.components.snackbar.LaskTopSnackbarHost
 import dev.alexmester.ui.components.snackbar.showLaskSnackbar
 import dev.alexmester.ui.desing_system.LaskColors
@@ -52,10 +53,9 @@ fun ArticleDetailScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    val isContentReady = state is ArticleDetailState.Content
 
-    LaunchedEffect(isContentReady) {
-        if (state !is ArticleDetailState.Content) return@LaunchedEffect
+    LaunchedEffect(state.isContent) {
+        if (!state.isContent) return@LaunchedEffect
         delay(READ_TIME_THRESHOLD_MS)
         viewModel.handleIntent(ArticleDetailIntent.TimeThresholdReached)
     }

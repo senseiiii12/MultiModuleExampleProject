@@ -1,8 +1,6 @@
-package dev.alexmester.impl.presentation.components
+package dev.alexmester.impl.presentation.components.header
 
-import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,8 +13,6 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -29,9 +25,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import dev.alexmester.ui.desing_system.LaskColors
-import dev.alexmester.ui.transition.SharedTransitionLocals
 import dev.alexmester.ui.transition.sharedElementIfAvailable
-import kotlinx.coroutines.delay
 
 @Composable
 fun ArticleDetailHeaderImage(

@@ -25,4 +25,17 @@
 
     <string name="reading_article">Прочитано</string>
 
+    <!-- Offline Banner -->
+    <string name="offline_banner_with_time">Офлайн · обновлено %1$s</string>
+    <string name="offline_banner">Офлайн</string>
+
+    <!-- Sentiment Text -->
+    <string name="sentiment_title">Настроение</string>
+    <string name="sentiment_positive">Позитивная</string>
+    <string name="sentiment_neutral">Нейтральная</string>
+    <string name="sentiment_negative">Негативная</string>
+
+    <!-- Common -->
+    <string name="unknown_author">Автор неизвестен</string>
+
 </resources>

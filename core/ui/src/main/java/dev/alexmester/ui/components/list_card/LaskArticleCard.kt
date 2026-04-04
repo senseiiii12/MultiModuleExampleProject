@@ -1,11 +1,7 @@
 package dev.alexmester.ui.components.list_card
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -26,34 +22,31 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import dev.alexmester.ui.R
+import dev.alexmester.ui.components.buttons.BookmarkButtonStyle
+import dev.alexmester.ui.components.buttons.LaskBookmarkButton
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskPalette
 import dev.alexmester.ui.desing_system.LaskTypography
 import dev.alexmester.ui.transition.sharedElementIfAvailable
+import dev.alexmester.utils.DateFormatter
 
 
 @Composable
@@ -114,7 +107,7 @@ fun LaskArticleCard(
                 ) {
                     sentiment?.let { SentimentDot(it) }
                     Text(
-                        text = publishDate,
+                        text = DateFormatter.formatPublishDate(publishDate),
                         style = MaterialTheme.LaskTypography.footnote,
                         color = MaterialTheme.LaskColors.textSecondary,
                     )
@@ -143,9 +136,10 @@ fun LaskArticleCard(
             enter = fadeIn() + scaleIn(initialScale = 0.7f),
             exit = fadeOut() + scaleOut(targetScale = 0.7f),
         ) {
-            BookmarkIcon(
-                isKept = isKept,
-                onToggle = onBookmarkToggle,
+            LaskBookmarkButton(
+                isBookmarked = isKept,
+                onClick = onBookmarkToggle,
+                style = BookmarkButtonStyle.Standalone,
             )
         }
     }
@@ -180,7 +174,7 @@ private fun ArticleImage(
                 placeholder = ColorPainter(MaterialTheme.LaskColors.backgroundSecondary),
                 error = ColorPainter(MaterialTheme.LaskColors.backgroundSecondary),
             )
-            if (isRead){
+            if (isRead) {
                 Text(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -219,29 +213,6 @@ private fun ArticleImagePlaceholder(modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-private fun BookmarkIcon(
-    isKept: Boolean,
-    onToggle: () -> Unit
-) {
-    val scale by animateFloatAsState(
-        targetValue = if (isKept) 1f else 0.85f,
-        animationSpec = spring(dampingRatio = 0.6f),
-    )
-
-    Icon(
-        imageVector = if (isKept) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
-        contentDescription = if (isKept) "Will be kept" else "Will be removed",
-        tint = LaskPalette.Bookmark,
-        modifier = Modifier
-            .size(24.dp)
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
-            .clickable(onClick = onToggle),
-    )
-}
 
 @Composable
 private fun SentimentDot(sentiment: Double) {
