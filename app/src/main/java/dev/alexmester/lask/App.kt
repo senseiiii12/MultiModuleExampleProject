@@ -22,9 +22,17 @@ import dev.alexmester.impl.di.articleDetailModule
 import dev.alexmester.impl.di.newsFeedModule
 import dev.alexmester.impl.navigation.ArticleDetailImpl
 import dev.alexmester.impl.navigation.NewsFeedImpl
+import dev.alexmester.lask.di.AppModules
 import dev.alexmester.lask.welcome_screen.SplashViewModel
+import dev.alexmester.models.di.DISPATCHER_DEFAULT
+import dev.alexmester.models.di.DISPATCHER_IO
+import dev.alexmester.models.di.DISPATCHER_MAIN
 import dev.alexmester.network.di.networkModule
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.Path.Companion.toOkioPath
@@ -33,39 +41,24 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.logger.Level
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 
-val featuresModule = module {
-    single<NewsFeedApi> { NewsFeedImpl(articleDetailApi = get()) }
-    // single<ExploreApi> { ExploreImpl() }
-    single<ArticleDetailApi> { ArticleDetailImpl() }
-    // single<BookmarksApi> { BookmarksImpl() }
-    // single<SettingsApi> { SettingsImpl() }
-    // single<SearchApi> { SearchImpl() }
-}
-val splashModule = module {
-    viewModel {
-        SplashViewModel(
-            preferencesDataSource = get(),
-            deviceLocaleProvider = get()
-        )
-    }
-    single { DeviceLocaleProvider(androidContext()) }
-    single {
-        LocaleChangeObserver(
-            context = androidContext(),
-            deviceLocaleProvider = get(),
-            preferencesDataSource = get(),
-            scope = GlobalScope,
-        )
-    }
-}
 
 class App : Application(), SingletonImageLoader.Factory {
 
-    override fun newImageLoader(context: PlatformContext): ImageLoader {
-        return ImageLoader.Builder(context)
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+            androidLogger(Level.DEBUG)
+            androidContext(this@App)
+            modules(AppModules.all)
+        }
+    }
+
+    override fun newImageLoader(context: PlatformContext): ImageLoader =
+        ImageLoader.Builder(context)
             .memoryCache {
                 MemoryCache.Builder()
                     .maxSizePercent(context, percent = 0.25)
@@ -78,29 +71,4 @@ class App : Application(), SingletonImageLoader.Factory {
                     .build()
             }
             .build()
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-
-        startKoin {
-            androidLogger(Level.DEBUG)
-            androidContext(this@App)
-
-            modules(
-                splashModule,
-                // Core
-                networkModule,
-                databaseModule,
-                dataStoreModule,
-
-                // Feature DI
-                newsFeedModule,
-                articleDetailModule,
-
-                // Feature Navigation
-                featuresModule,
-            )
-        }
-    }
 }

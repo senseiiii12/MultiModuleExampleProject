@@ -10,96 +10,98 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.alexmester.models.news.NewsArticle
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTheme
 import dev.alexmester.ui.desing_system.LaskTypography
 
 // ── Тестовые данные ───────────────────────────────────────────────────────────
 
-private val articleWithImage = NewsArticleCardData(
+private val articleWithImage = NewsArticle(
+    id = 1L,
     title = "Biden Signs Major Climate Bill Into Law After Senate Approval",
-    imageUrl = "https://picsum.photos/seed/news1/200/200",
+    text = null,
+    summary = null,
+    url = "https://example.com/1",
+    image = "https://picsum.photos/seed/news1/200/200",
+    video = null,
+    publishDate = "2026-03-22 10:00:00",
+    authors = listOf("John Smith"),
     category = "politics",
-    publishDate = "2026-03-22",
-    author = listOf("John Smith"),
+    language = "en",
+    sourceCountry = "us",
     sentiment = 0.5,
 )
 
-private val articleNoImage = NewsArticleCardData(
+private val articleNoImage = NewsArticle(
+    id = 2L,
     title = "Markets Crash as Global Economic Uncertainty Reaches New High",
-    imageUrl = null,
+    text = null,
+    summary = null,
+    url = "https://example.com/2",
+    image = null,
+    video = null,
+    publishDate = "2026-03-22 12:00:00",
+    authors = listOf("Jane Doe"),
     category = "business",
-    publishDate = "2026-03-22",
-    author = listOf("Jane Doe"),
+    language = "en",
+    sourceCountry = "us",
     sentiment = -0.7,
 )
 
-private val articleNeutral = NewsArticleCardData(
+private val articleNeutral = NewsArticle(
+    id = 3L,
     title = "Scientists Discover New Species in Amazon Rainforest",
-    imageUrl = "https://picsum.photos/seed/news3/200/200",
+    text = null,
+    summary = null,
+    url = "https://example.com/3",
+    image = "https://picsum.photos/seed/news3/200/200",
+    video = null,
+    publishDate = "2026-03-21 09:00:00",
+    authors = emptyList(),
     category = "science",
-    publishDate = "2026-03-21",
-    author = emptyList(),
+    language = "en",
+    sourceCountry = "us",
     sentiment = 0.0,
 )
 
-private val articleLongTitle = NewsArticleCardData(
+private val articleLongTitle = NewsArticle(
+    id = 4L,
     title = "International Summit on Artificial Intelligence Regulation Concludes With Historic Agreement Between 50 Nations on Safety Standards",
-    imageUrl = "https://picsum.photos/seed/news4/200/200",
+    text = null,
+    summary = null,
+    url = "https://example.com/4",
+    image = "https://picsum.photos/seed/news4/200/200",
+    video = null,
+    publishDate = "2026-03-20 15:30:00",
+    authors = listOf("Sarah Connor", "Jane Doe"),
     category = "technology",
-    publishDate = "2026-03-20",
-    author = listOf("Sarah Connor", "Jane Doe"),
+    language = "en",
+    sourceCountry = "us",
     sentiment = 0.3,
 )
 
-private val articleNoMeta = NewsArticleCardData(
+private val articleNoMeta = NewsArticle(
+    id = 5L,
     title = "Quick Update: Server Maintenance Scheduled",
-    imageUrl = null,
+    text = null,
+    summary = null,
+    url = "https://example.com/5",
+    image = null,
+    video = null,
+    publishDate = "2026-03-19 08:00:00",
+    authors = emptyList(),
     category = null,
-    publishDate = "2026-03-19",
-    author = emptyList(),
+    language = null,
+    sourceCountry = null,
     sentiment = null,
 )
 
-
-private data class NewsArticleCardData(
-    val title: String,
-    val imageUrl: String?,
-    val category: String?,
-    val publishDate: String,
-    val author: List<String?>,
-    val sentiment: Double?,
-)
-
-@Composable
-private fun NewsArticleCardData.Composable(
-    selectionMode: Boolean = false,
-    isKept: Boolean = true,
-    modifier: Modifier = Modifier,
-) {
-    LaskArticleCard(
-        title = title,
-        imageUrl = imageUrl,
-        category = category,
-        publishDate = publishDate,
-        authors = author,
-        sentiment = sentiment,
-        articleId = 1L,
-        selectionMode = selectionMode,
-        isKept = isKept,
-        modifier = modifier.fillMaxWidth(),
-    )
-}
-
-// ── Секция-разделитель для превью ─────────────────────────────────────────────
+// ── Хелпер ────────────────────────────────────────────────────────────────────
 
 @Composable
 private fun Section(label: String, content: @Composable () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-    ) {
+    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
         Text(
             text = label,
             style = MaterialTheme.LaskTypography.footnoteSemiBold,
@@ -110,131 +112,120 @@ private fun Section(label: String, content: @Composable () -> Unit) {
     }
 }
 
-// ── Previews ──────────────────────────────────────────────────────────────────
+@Composable
+private fun PreviewCard(
+    article: NewsArticle,
+    selectionMode: Boolean = false,
+    isKept: Boolean = true,
+    isRead: Boolean = false,
+) {
+    LaskArticleCard(
+        modifier = Modifier.fillMaxWidth(),
+        article = article,
+        selectionMode = selectionMode,
+        isKept = isKept,
+        isRead = isRead,
+    )
+}
 
-@Preview(name = "Normal mode — Light", showBackground = true, widthDp = 390)
+// ── Previews — Normal mode ────────────────────────────────────────────────────
+
+@Preview(name = "Normal — Light", showBackground = true, widthDp = 390)
 @Composable
 private fun PreviewNormalLight() {
     LaskTheme(darkTheme = false) {
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.LaskColors.backgroundPrimary)
-                .padding(vertical = 8.dp)
-        ) {
-            Section("С картинкой / позитивная тональность") {
-                articleWithImage.Composable()
-            }
-            Section("Без картинки / негативная тональность") {
-                articleNoImage.Composable()
-            }
-            Section("С картинкой / нейтральная / без автора") {
-                articleNeutral.Composable()
-            }
-            Section("Длинный заголовок") {
-                articleLongTitle.Composable()
-            }
-            Section("Нет категории, автора, тональности") {
-                articleNoMeta.Composable()
-            }
+        Column(modifier = Modifier.background(MaterialTheme.LaskColors.backgroundPrimary).padding(vertical = 8.dp)) {
+            Section("С картинкой / позитивная тональность") { PreviewCard(articleWithImage) }
+            Section("Без картинки / негативная тональность") { PreviewCard(articleNoImage) }
+            Section("С картинкой / нейтральная / без автора") { PreviewCard(articleNeutral) }
+            Section("Длинный заголовок") { PreviewCard(articleLongTitle) }
+            Section("Нет категории, автора, тональности") { PreviewCard(articleNoMeta) }
         }
     }
 }
 
-@Preview(name = "Normal mode — Dark", showBackground = true, backgroundColor = 0xFF0D0D0D, widthDp = 390)
+@Preview(name = "Normal — Dark", showBackground = true, backgroundColor = 0xFF0D0D0D, widthDp = 390)
 @Composable
 private fun PreviewNormalDark() {
     LaskTheme(darkTheme = true) {
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.LaskColors.backgroundPrimary)
-                .padding(vertical = 8.dp)
-        ) {
-            Section("С картинкой / позитивная тональность") {
-                articleWithImage.Composable()
-            }
-            Section("Без картинки / негативная тональность") {
-                articleNoImage.Composable()
-            }
-            Section("С картинкой / нейтральная / без автора") {
-                articleNeutral.Composable()
-            }
-            Section("Длинный заголовок") {
-                articleLongTitle.Composable()
-            }
-            Section("Нет категории, автора, тональности") {
-                articleNoMeta.Composable()
-            }
+        Column(modifier = Modifier.background(MaterialTheme.LaskColors.backgroundPrimary).padding(vertical = 8.dp)) {
+            Section("С картинкой / позитивная тональность") { PreviewCard(articleWithImage) }
+            Section("Без картинки / негативная тональность") { PreviewCard(articleNoImage) }
+            Section("С картинкой / нейтральная / без автора") { PreviewCard(articleNeutral) }
+            Section("Длинный заголовок") { PreviewCard(articleLongTitle) }
+            Section("Нет категории, автора, тональности") { PreviewCard(articleNoMeta) }
         }
     }
 }
 
-@Preview(name = "Edit mode — all kept — Light", showBackground = true, widthDp = 390)
+// ── Previews — Edit mode ──────────────────────────────────────────────────────
+
+@Preview(name = "Edit — all kept — Light", showBackground = true, widthDp = 390)
 @Composable
 private fun PreviewEditAllKeptLight() {
     LaskTheme(darkTheme = false) {
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.LaskColors.backgroundPrimary)
-                .padding(vertical = 8.dp)
-        ) {
+        Column(modifier = Modifier.background(MaterialTheme.LaskColors.backgroundPrimary).padding(vertical = 8.dp)) {
             Section("Edit: все помечены как «сохранить»") {
-                articleWithImage.Composable(selectionMode = true, isKept = true)
-                articleNoImage.Composable(selectionMode = true, isKept = true)
-                articleNeutral.Composable(selectionMode = true, isKept = true)
+                PreviewCard(articleWithImage, selectionMode = true, isKept = true)
+                PreviewCard(articleNoImage, selectionMode = true, isKept = true)
+                PreviewCard(articleNeutral, selectionMode = true, isKept = true)
             }
         }
     }
 }
 
-/** Edit-режим — смешанное состояние */
-@Preview(name = "Edit mode — mixed — Light", showBackground = true, widthDp = 390)
+@Preview(name = "Edit — mixed — Light", showBackground = true, widthDp = 390)
 @Composable
 private fun PreviewEditMixedLight() {
     LaskTheme(darkTheme = false) {
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.LaskColors.backgroundPrimary)
-                .padding(vertical = 8.dp)
-        ) {
+        Column(modifier = Modifier.background(MaterialTheme.LaskColors.backgroundPrimary).padding(vertical = 8.dp)) {
             Section("Edit: жёлтая = оставить, серая = удалить") {
-                articleWithImage.Composable(selectionMode = true, isKept = true)
-                articleNoImage.Composable(selectionMode = true, isKept = false)
-                articleNeutral.Composable(selectionMode = true, isKept = true)
-            }
-        }
-    }
-}
-@Preview(name = "Edit mode — all kept — Dark", showBackground = true, widthDp = 390)
-@Composable
-private fun PreviewEditAllKeptDark() {
-    LaskTheme(darkTheme = true) {
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.LaskColors.backgroundPrimary)
-                .padding(vertical = 8.dp)
-        ) {
-            Section("Edit: все помечены как «сохранить»") {
-                articleWithImage.Composable(selectionMode = true, isKept = true)
-                articleNoImage.Composable(selectionMode = true, isKept = true)
-                articleNeutral.Composable(selectionMode = true, isKept = true)
+                PreviewCard(articleWithImage, selectionMode = true, isKept = true)
+                PreviewCard(articleNoImage, selectionMode = true, isKept = false)
+                PreviewCard(articleNeutral, selectionMode = true, isKept = true)
             }
         }
     }
 }
 
-@Preview(name = "Edit mode — mixed — Dark", showBackground = true, backgroundColor = 0xFF0D0D0D, widthDp = 390)
+@Preview(name = "Edit — all kept — Dark", showBackground = true, backgroundColor = 0xFF0D0D0D, widthDp = 390)
+@Composable
+private fun PreviewEditAllKeptDark() {
+    LaskTheme(darkTheme = true) {
+        Column(modifier = Modifier.background(MaterialTheme.LaskColors.backgroundPrimary).padding(vertical = 8.dp)) {
+            Section("Edit: все помечены как «сохранить»") {
+                PreviewCard(articleWithImage, selectionMode = true, isKept = true)
+                PreviewCard(articleNoImage, selectionMode = true, isKept = true)
+                PreviewCard(articleNeutral, selectionMode = true, isKept = true)
+            }
+        }
+    }
+}
+
+@Preview(name = "Edit — mixed — Dark", showBackground = true, backgroundColor = 0xFF0D0D0D, widthDp = 390)
 @Composable
 private fun PreviewEditMixedDark() {
     LaskTheme(darkTheme = true) {
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.LaskColors.backgroundPrimary)
-                .padding(vertical = 8.dp)
-        ) {
+        Column(modifier = Modifier.background(MaterialTheme.LaskColors.backgroundPrimary).padding(vertical = 8.dp)) {
             Section("Edit: жёлтая = оставить, серая = удалить") {
-                articleWithImage.Composable(selectionMode = true, isKept = true)
-                articleNoImage.Composable(selectionMode = true, isKept = false)
-                articleNeutral.Composable(selectionMode = true, isKept = true)
+                PreviewCard(articleWithImage, selectionMode = true, isKept = true)
+                PreviewCard(articleNoImage, selectionMode = true, isKept = false)
+                PreviewCard(articleNeutral, selectionMode = true, isKept = true)
+            }
+        }
+    }
+}
+
+// ── Preview — isRead ──────────────────────────────────────────────────────────
+
+@Preview(name = "Read badge — Light", showBackground = true, widthDp = 390)
+@Composable
+private fun PreviewReadLight() {
+    LaskTheme(darkTheme = false) {
+        Column(modifier = Modifier.background(MaterialTheme.LaskColors.backgroundPrimary).padding(vertical = 8.dp)) {
+            Section("Прочитанная статья") {
+                PreviewCard(articleWithImage, isRead = true)
+                PreviewCard(articleNoImage, isRead = true)
             }
         }
     }

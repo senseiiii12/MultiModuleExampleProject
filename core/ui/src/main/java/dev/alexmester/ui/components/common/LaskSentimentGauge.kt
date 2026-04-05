@@ -32,7 +32,7 @@ import kotlin.math.sin
 
 
 @Composable
-fun SentimentGauge(
+fun LaskSentimentGauge(
     sentiment: Double,
     modifier: Modifier = Modifier,
     arcStrokeWidth: Dp = 16.dp,
@@ -62,17 +62,13 @@ fun SentimentGauge(
         ) {
             val strokePx = arcStrokeWidth.toPx().coerceAtLeast(12.dp.toPx())
             val padding = strokePx / 2f
-
-            // Дуга вписана в квадрат с отступом под толщину
             val arcSize = Size(
                 width = size.width - strokePx,
                 height = size.width - strokePx,
             )
             val topLeft = Offset(padding, padding)
-
-            // centerX/centerY — центр окружности = нижний центр полукруга
             val centerX = size.width / 2f
-            val centerY = size.width / 2f  // не size.height!
+            val centerY = size.width / 2f
 
             // ── Фоновая дуга ──────────────────────────────────────────────
             drawArc(
@@ -85,11 +81,10 @@ fun SentimentGauge(
                 style = Stroke(width = strokePx, cap = StrokeCap.Butt),
             )
 
-            // ── Три сегмента без Round cap чтобы не было зазоров ──────────
             drawArc(
                 color = LaskPalette.Sentiment_Negative,
                 startAngle = 180f,
-                sweepAngle = 61f, // +1 чтобы перекрыть стык
+                sweepAngle = 61f,
                 useCenter = false,
                 topLeft = topLeft,
                 size = arcSize,
@@ -114,8 +109,6 @@ fun SentimentGauge(
                 style = Stroke(width = strokePx, cap = StrokeCap.Butt),
             )
 
-            // Скруглённые края только у первого и последнего сегмента
-            // рисуем поверх маленькими дугами с Round cap
             drawArc(
                 color = LaskPalette.Sentiment_Negative,
                 startAngle = 180f,
@@ -135,7 +128,6 @@ fun SentimentGauge(
                 style = Stroke(width = strokePx, cap = StrokeCap.Round),
             )
 
-            // ── Стрелка ───────────────────────────────────────────────────
             val needleRadius = centerY - strokePx * 1.6f
             drawNeedle(
                 centerX = centerX,
@@ -179,13 +171,11 @@ private fun DrawScope.drawNeedle(
     val tipX = centerX + radius * cos(angleRad).toFloat()
     val tipY = centerY + radius * sin(angleRad).toFloat()
 
-    // Основание стрелки — маленький круг
     drawCircle(
         color = color,
         radius = strokePx * 0.8f,
         center = Offset(centerX, centerY),
     )
-    // Линия стрелки
     drawLine(
         color = color,
         start = Offset(centerX, centerY),

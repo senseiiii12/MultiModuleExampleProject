@@ -7,7 +7,7 @@ import dev.alexmester.ui.desing_system.LaskPalette
 import dev.alexmester.ui.desing_system.LaskTypography
 
 @Composable
-fun SentimentDot(sentiment: Double) {
+fun LaskSentimentDot(sentiment: Double) {
     val color = when {
         sentiment > 0.1 -> LaskPalette.Sentiment_Positive
         sentiment < -0.1 -> LaskPalette.Sentiment_Negative

@@ -6,14 +6,21 @@ import dev.alexmester.impl.data.repository.NewsFeedRepositoryImpl
 import dev.alexmester.impl.domain.interactor.NewsFeedInteractor
 import dev.alexmester.impl.domain.repository.NewsFeedRepository
 import dev.alexmester.impl.presentation.mvi.NewsFeedViewModel
+import dev.alexmester.models.di.DISPATCHER_IO
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val newsFeedModule = module {
 
-    // Data
     single { NewsFeedApiService(client = get()) }
-    single { NewsFeedLocalDataSource(dao = get(),db = get()) }
+    single {
+        NewsFeedLocalDataSource(
+            dao = get(),
+            db = get(),
+            ioDispatcher = get(named(DISPATCHER_IO)),
+        )
+    }
     single<NewsFeedRepository> {
         NewsFeedRepositoryImpl(
             remote = get(),
@@ -21,7 +28,6 @@ val newsFeedModule = module {
         )
     }
 
-    // Domain
     factory {
         NewsFeedInteractor(
             repository = get(),
@@ -29,6 +35,5 @@ val newsFeedModule = module {
         )
     }
 
-    // Presentation
     viewModel { NewsFeedViewModel(interactor = get()) }
 }
