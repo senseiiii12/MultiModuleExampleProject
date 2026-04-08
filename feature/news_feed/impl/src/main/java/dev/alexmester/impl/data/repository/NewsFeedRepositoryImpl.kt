@@ -26,7 +26,7 @@ class NewsFeedRepositoryImpl(
             }
         }
 
-    override fun getReadArticleIdsFlow(): Flow<List<Long>> =
+    override fun getReadArticleIdsFlow(): Flow<Set<Long>> =
         local.getReadArticleIds()
 
     override suspend fun refreshTopNews(

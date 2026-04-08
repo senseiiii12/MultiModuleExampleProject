@@ -18,7 +18,7 @@ interface ReadingHistoryDao {
 
     // Для визуальной метки в ленте — возвращаем Set id всех прочитанных
     @Query("SELECT articleId FROM reading_history")
-    fun getReadArticleIds(): Flow<List<Long>>
+    fun getReadArticleIds(): Flow<Set<Long>>
 
     // Для счётчика на профиле
     @Query("SELECT COUNT(*) FROM reading_history")

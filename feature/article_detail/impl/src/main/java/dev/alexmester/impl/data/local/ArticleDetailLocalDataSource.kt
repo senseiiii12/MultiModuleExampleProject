@@ -41,8 +41,6 @@ class ArticleDetailLocalDataSource(
     suspend fun deleteBookmark(id: Long) =
         withContext(ioDispatcher) { bookmarkDao.deleteBookmark(id) }
 
-
-
     suspend fun addClap(id: Long) = withContext(ioDispatcher) {
         val existing = clapDao.getClapCount(id)
         if (existing == null) {

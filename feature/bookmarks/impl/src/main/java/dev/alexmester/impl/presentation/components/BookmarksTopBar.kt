@@ -13,7 +13,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import dev.alexmester.impl.presentation.mvi.BookmarksIntent
 import dev.alexmester.ui.R
@@ -60,7 +62,7 @@ internal fun BookmarksTopBar(
                 } else {
                     IconButton(onClick = { onIntent(BookmarksIntent.ToggleEditMode) }) {
                         Icon(
-                            imageVector = Icons.Outlined.Edit,
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_edit),
                             contentDescription = null,
                             tint = MaterialTheme.LaskColors.textPrimary,
                         )

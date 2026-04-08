@@ -32,12 +32,11 @@ class NewsFeedViewModel(
     private val _state = MutableStateFlow<NewsFeedScreenState>(NewsFeedScreenState.Loading)
     val state: StateFlow<NewsFeedScreenState> = _state.asStateFlow()
 
-    private val _sideEffects = Channel<NewsFeedSideEffect>(Channel.Factory.BUFFERED)
+    private val _sideEffects = Channel<NewsFeedSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
 
     val readArticleIds: StateFlow<Set<Long>> = interactor
         .getReadArticleIdsFlow()
-        .map { it.toSet() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),

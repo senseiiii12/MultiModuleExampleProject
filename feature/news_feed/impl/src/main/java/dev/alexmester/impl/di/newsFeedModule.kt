@@ -16,7 +16,8 @@ val newsFeedModule = module {
     single { NewsFeedApiService(client = get()) }
     single {
         NewsFeedLocalDataSource(
-            dao = get(),
+            newsArticleDao = get(),
+            readingHistoryDao = get(),
             db = get(),
             ioDispatcher = get(named(DISPATCHER_IO)),
         )

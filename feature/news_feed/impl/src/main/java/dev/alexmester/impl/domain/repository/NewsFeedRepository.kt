@@ -8,7 +8,7 @@ interface NewsFeedRepository {
 
     fun getClustersFlow(): Flow<List<NewsCluster>>
 
-    fun getReadArticleIdsFlow(): Flow<List<Long>>
+    fun getReadArticleIdsFlow(): Flow<Set<Long>>
 
     suspend fun refreshTopNews(
         country: String,
