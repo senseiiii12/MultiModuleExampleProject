@@ -3,6 +3,7 @@ package dev.alexmester.impl.presentation.mvi
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.alexmester.datastore.UserPreferencesDataSource
 import dev.alexmester.impl.domain.interactor.ArticleDetailInteractor
 import dev.alexmester.ui.R
 import dev.alexmester.ui.uitext.UiText
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 
 class ArticleDetailViewModel(
     private val interactor: ArticleDetailInteractor,
+    private val userPreferencesDataSource: UserPreferencesDataSource,
     private val articleId: Long,
     private val articleUrl: String,
 ) : ViewModel() {
@@ -67,6 +69,7 @@ class ArticleDetailViewModel(
         isMarkedAsRead = true
         viewModelScope.launch {
             interactor.markAsRead(article)
+            userPreferencesDataSource.addXp(100f)
         }
     }
 
@@ -79,7 +82,6 @@ class ArticleDetailViewModel(
             } else {
                 val isBookmarked = interactor.isBookmarkedOnce(articleId)
                 val clapCount = interactor.getClapCountOnce(articleId) ?: 0
-                Log.d("loadArticle", isBookmarked.toString() + clapCount.toString())
                 _state.value = ArticleDetailState.Content(
                     article = article,
                     isBookmarked = isBookmarked,
@@ -108,6 +110,7 @@ class ArticleDetailViewModel(
     private fun onClap() {
         viewModelScope.launch {
             interactor.addClap(articleId)
+            userPreferencesDataSource.addXp(10f)
         }
     }
 
@@ -120,6 +123,7 @@ class ArticleDetailViewModel(
             else
                 UiText.StringResource(R.string.bookmark_removed)
             emitSideEffect(ArticleDetailSideEffect.ShowSnackbar(msg))
+            userPreferencesDataSource.addXp(50f)
         }
     }
 

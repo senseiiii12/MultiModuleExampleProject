@@ -66,53 +66,13 @@ fun ProfileTopHeader(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        Box(
-            modifier = modifier
-                .size(120.dp)
-                .then(
-                    if (isEdit) Modifier.border(
-                        width = 2.dp,
-                        color = MaterialTheme.LaskColors.textLink,
-                        shape = CircleShape,
-                    ) else Modifier
-                )
-                .clip(CircleShape)
-                .clickable(enabled = isEdit) { launcher.launch("image/*") },
-            contentAlignment = Alignment.Center,
-        ) {
-            if (isEdit) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .zIndex(1f),
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.AddPhotoAlternate,
-                        contentDescription = null,
-                        tint = MaterialTheme.LaskColors.textLink,
-                    )
-                }
-            }
-            if (displayUri != null) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(displayUri)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape),
-                )
-            } else {
-                AuthorAvatar(
-                    modifier = Modifier.size(120.dp),
-                    char = name.firstOrNull()?.uppercase() ?: "A",
-                )
-            }
-        }
-
+        ProfileAvatar(
+            modifier = Modifier,
+            displayUri = displayUri,
+            name = name,
+            isEdit = isEdit,
+            onClick = { launcher.launch("image/*") }
+        )
         ProfileNameRow(
             modifier = Modifier,
             name = name,

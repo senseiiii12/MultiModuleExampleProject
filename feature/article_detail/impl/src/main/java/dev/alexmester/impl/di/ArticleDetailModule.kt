@@ -33,6 +33,7 @@ val articleDetailModule = module {
     viewModel { (articleId: Long, articleUrl: String) ->
         ArticleDetailViewModel(
             interactor = get(),
+            userPreferencesDataSource = get(),
             articleId = articleId,
             articleUrl = articleUrl,
         )

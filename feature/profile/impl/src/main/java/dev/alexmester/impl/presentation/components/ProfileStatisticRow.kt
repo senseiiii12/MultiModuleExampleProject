@@ -21,9 +21,9 @@ import dev.alexmester.ui.desing_system.LaskTypography
 @Composable
 fun ProfileStatisticRow(
     modifier: Modifier = Modifier,
-    articleReadCount: Int = 0,
-    streakCount: Int = 0,
-    levelCount: Int = 0,
+    articleReadCount: Int,
+    streakCount: Int,
+    levelCount: Int,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
