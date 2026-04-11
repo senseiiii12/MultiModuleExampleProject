@@ -24,7 +24,7 @@ val profileModule = module {
     factory {
         ProfileInteractor(
             preferencesDataSource = get(),
-            readingHistoryDao = get()
+            articleUserStateDao = get()
         )
     }
 

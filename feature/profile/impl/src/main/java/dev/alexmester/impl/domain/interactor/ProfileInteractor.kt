@@ -1,7 +1,7 @@
 package dev.alexmester.impl.domain.interactor
 
 import android.net.Uri
-import dev.alexmester.database.dao.ReadingHistoryDao
+import dev.alexmester.database.dao.ArticleUserStateDao
 import dev.alexmester.datastore.UserPreferencesDataSource
 import dev.alexmester.datastore.model.UserPreferences
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +10,7 @@ import java.time.LocalDate
 
 class ProfileInteractor(
     private val preferencesDataSource: UserPreferencesDataSource,
-    private val readingHistoryDao: ReadingHistoryDao,
+    private val articleUserStateDao: ArticleUserStateDao
 ) {
 
     suspend fun applyEditChanges(imageUri: Uri?, name: String){
@@ -25,8 +25,8 @@ class ProfileInteractor(
 
     fun observeProfile(): Flow<Pair<UserPreferences, Int>> {
         return preferencesDataSource.userPreferences
-            .combine(readingHistoryDao.getReadCount()){ prefs, readCount ->
-                prefs to readCount
+            .combine(articleUserStateDao.observeReadArticleIds()){ prefs, readCount ->
+                prefs to readCount.size
             }
     }
 }
