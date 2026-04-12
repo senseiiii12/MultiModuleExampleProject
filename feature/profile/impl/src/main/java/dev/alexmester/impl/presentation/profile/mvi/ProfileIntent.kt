@@ -10,4 +10,5 @@ sealed class ProfileIntent {
     data class OnProfileAvatarChange(val uri: Uri?): ProfileIntent()
     data object NavigateToReadArticles : ProfileIntent()
     data object NavigateToClappedArticles : ProfileIntent()
+    data object NavigateToSystemSettings : ProfileIntent()
 }

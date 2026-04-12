@@ -86,7 +86,7 @@ fun ProfileContent(
             LaskRowMenu(
                 modifier = Modifier,
                 menuName = stringResource(R.string.profile_menu_system),
-                onClick = {  }
+                onClick = { onIntent(ProfileIntent.NavigateToSystemSettings) }
             )
         }
     }

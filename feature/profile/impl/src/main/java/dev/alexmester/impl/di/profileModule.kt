@@ -1,21 +1,22 @@
 package dev.alexmester.impl.di
 
 import dev.alexmester.api.navigation.ArticleListType
+import dev.alexmester.api.navigation.LocalePickerType
 import dev.alexmester.impl.data.local.ArticleListLocalDataSource
 import dev.alexmester.impl.data.repository.ArticleListRepositoryImpl
 import dev.alexmester.impl.domain.interactor.ArticleListInteractor
 import dev.alexmester.impl.domain.interactor.ProfileInteractor
 import dev.alexmester.impl.domain.repository.ArticleListRepository
 import dev.alexmester.impl.presentation.article_list.mvi.ArticleListViewModel
+import dev.alexmester.impl.presentation.locale_picker.mvi.LocalePickerViewModel
 import dev.alexmester.impl.presentation.profile.mvi.ProfileViewModel
+import dev.alexmester.impl.presentation.system.mvi.SystemViewModel
 import dev.alexmester.models.di.DISPATCHER_IO
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val profileModule = module {
-
-    // ── ArticleList ───────────────────────────────────────────────────────────
 
     single {
         ArticleListLocalDataSource(
@@ -31,16 +32,6 @@ val profileModule = module {
     factory {
         ArticleListInteractor(repository = get())
     }
-
-    viewModel { (type: ArticleListType) ->
-        ArticleListViewModel(
-            type = type,
-            interactor = get(),
-        )
-    }
-
-    // ── Profile ───────────────────────────────────────────────────────────────
-
     factory {
         ProfileInteractor(
             preferencesDataSource = get(),
@@ -48,7 +39,22 @@ val profileModule = module {
         )
     }
 
+    viewModel { (type: ArticleListType) ->
+        ArticleListViewModel(
+            type = type,
+            interactor = get(),
+        )
+    }
+    viewModel {
+        SystemViewModel(preferencesDataSource = get())
+    }
     viewModel {
         ProfileViewModel(profileInteractor = get())
+    }
+    viewModel { (type: LocalePickerType) ->
+        LocalePickerViewModel(
+            type = type,
+            preferencesDataSource = get(),
+        )
     }
 }

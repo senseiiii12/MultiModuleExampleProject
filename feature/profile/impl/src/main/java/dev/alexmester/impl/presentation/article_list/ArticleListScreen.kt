@@ -35,6 +35,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alexmester.api.navigation.ArticleListType
+import dev.alexmester.impl.presentation.article_list.components.ArticleListContent
+import dev.alexmester.impl.presentation.article_list.components.ArticleListTopBar
 import dev.alexmester.impl.presentation.article_list.components.CategoryFilterRow
 import dev.alexmester.impl.presentation.article_list.mvi.ArticleListIntent
 import dev.alexmester.impl.presentation.article_list.mvi.ArticleListSideEffect
@@ -89,33 +91,10 @@ internal fun ArticleListScreenContent(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = { onIntent(ArticleListIntent.Back) }) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardBackspace,
-                            contentDescription = null,
-                            tint = MaterialTheme.LaskColors.textPrimary,
-                        )
-                    }
-                },
-                title = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = title,
-                            style = MaterialTheme.LaskTypography.h5,
-                            color = MaterialTheme.LaskColors.textPrimary,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.LaskColors.brand_blue10,
-                ),
+            ArticleListTopBar(
+                modifier = Modifier,
+                title = title,
+                onBack = { onIntent(ArticleListIntent.Back) }
             )
         },
         containerColor = MaterialTheme.LaskColors.backgroundPrimary,
@@ -148,41 +127,11 @@ internal fun ArticleListScreenContent(
                 }
 
                 else -> {
-                    Column {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        CategoryFilterRow(
-                            categories = state.categories,
-                            selectedCategory = state.selectedCategory,
-                            onCategorySelected = { category ->
-                                onIntent(ArticleListIntent.SelectCategory(category))
-                            },
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                        ) {
-                            items(
-                                items = state.filteredArticles,
-                                key = { it.id },
-                            ) { article ->
-                                LaskArticleCard(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .animateItem(),
-                                    article = article,
-                                    isRead = true,
-                                    onClick = {
-                                        onIntent(
-                                            ArticleListIntent.ArticleClick(
-                                                articleId = article.id,
-                                                articleUrl = article.url,
-                                            )
-                                        )
-                                    },
-                                )
-                            }
-                        }
-                    }
+                    ArticleListContent(
+                        modifier = Modifier,
+                        state = state,
+                        onIntent = { onIntent(it) }
+                    )
                 }
             }
         }

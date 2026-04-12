@@ -49,6 +49,9 @@ class ProfileViewModel(
 
             is ProfileIntent.NavigateToClappedArticles ->
                 emitSideEffect(ProfileSideEffect.NavigateToArticleList(ArticleListType.CLAPPED))
+
+            is ProfileIntent.NavigateToSystemSettings ->
+                emitSideEffect(ProfileSideEffect.NavigateToSystemSettings)
         }
     }
 

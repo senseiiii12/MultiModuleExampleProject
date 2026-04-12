@@ -89,7 +89,7 @@ fun LaskArticleCardImage(
                         )
                         .padding(vertical = 4.dp, horizontal = 8.dp)
                     ,
-                    text = stringResource(R.string.reading_article),
+                    text = stringResource(R.string.article_read),
                     style = MaterialTheme.LaskTypography.footnote,
                     color = MaterialTheme.LaskColors.textPrimary
                 )

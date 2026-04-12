@@ -27,6 +27,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ProfileScreen(
     onNavigateToArticleList: (ArticleListType) -> Unit,
+    onNavigateToSystemSettings: () -> Unit,
     viewModel: ProfileViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -36,6 +37,8 @@ fun ProfileScreen(
             when (effect) {
                 is ProfileSideEffect.NavigateToArticleList ->
                     onNavigateToArticleList(effect.type)
+                is ProfileSideEffect.NavigateToSystemSettings ->
+                    onNavigateToSystemSettings()
             }
         }
     }
