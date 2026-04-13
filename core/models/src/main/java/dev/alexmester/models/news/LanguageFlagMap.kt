@@ -2,13 +2,6 @@ package dev.alexmester.models.news
 
 /**
  * Маппинг кода языка → код страны для отображения emoji флага.
- *
- * Не все языки совпадают с кодом страны:
- * - "en" → "gb" (English → Great Britain)
- * - "zh" → "cn" (Chinese → China)
- * - "ja" → "jp" (Japanese → Japan)
- * и т.д.
- *
  * Для языков у которых код совпадает со страной (de→de, fr→fr)
  * запись не нужна — используем код языка напрямую как fallback.
  */
@@ -47,7 +40,6 @@ object LanguageFlagMap {
 
     /**
      * Возвращает код страны для флага по коду языка.
-     * Если маппинг не найден — возвращает сам код языка (best effort).
      */
     fun flagCountryFor(languageCode: String): String =
         MAP[languageCode] ?: languageCode

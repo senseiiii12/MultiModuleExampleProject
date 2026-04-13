@@ -4,7 +4,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import dev.alexmester.api.navigation.NewsFeedRoute
-import dev.alexmester.ui.components.welcome_screen.WelcomeScreen
 
 fun NavGraphBuilder.welcomeScreen(
     navController: NavHostController,

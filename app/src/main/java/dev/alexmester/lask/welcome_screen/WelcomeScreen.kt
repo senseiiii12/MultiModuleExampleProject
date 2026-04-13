@@ -1,10 +1,13 @@
-package dev.alexmester.ui.components.welcome_screen
+package dev.alexmester.lask.welcome_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -15,12 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,7 +39,7 @@ fun WelcomeScreen(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxHeight(0.55f)
+                .fillMaxHeight(1f)
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)
                 .background(
@@ -74,30 +74,32 @@ fun WelcomeScreen(
                 )
                 .navigationBarsPadding()
                 .padding(horizontal = 32.dp)
-                .padding(top = 40.dp, bottom = 32.dp),
+                .padding(top = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
+                modifier = Modifier.weight(1f, fill = false),
                 textAlign = TextAlign.Center,
                 text = stringResource(R.string.welcome_title),
                 style = MaterialTheme.LaskTypography.h3,
                 color = MaterialTheme.LaskColors.textPrimary,
                 maxLines = 3,
                 autoSize = TextAutoSize.StepBased(
-                    minFontSize = 26.sp,
+                    minFontSize = 20.sp,
                     maxFontSize = MaterialTheme.LaskTypography.h3.fontSize.value.sp,
                     stepSize = 1.sp,
                 ),
             )
             Text(
+                modifier = Modifier.weight(1f, fill = false),
                 textAlign = TextAlign.Center,
                 text = stringResource(R.string.welcome_subtitle),
                 style = MaterialTheme.LaskTypography.body2,
                 color = MaterialTheme.LaskColors.textSecondary,
                 maxLines = 5,
                 autoSize = TextAutoSize.StepBased(
-                    minFontSize = 10.sp,
+                    minFontSize = 8.sp,
                     maxFontSize = MaterialTheme.LaskTypography.body2.fontSize.value.sp,
                     stepSize = 1.sp,
                 ),
@@ -106,13 +108,14 @@ fun WelcomeScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(
+                modifier = Modifier.weight(1f, fill = false),
                 onClick = onExploreClick,
                 shape = RoundedCornerShape(50.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.LaskColors.brand_blue,
                     contentColor = Color.White,
                 ),
-                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp)
+                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)
             ) {
                 Text(
                     text = stringResource(R.string.welcome_explore),

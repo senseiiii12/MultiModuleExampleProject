@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.alexmester.api.navigation.LocalePickerType
 import dev.alexmester.datastore.UserPreferencesDataSource
-import dev.alexmester.impl.presentation.locale_picker.components.LocaleItem
-import dev.alexmester.models.news.LanguageFlagMap
-import dev.alexmester.models.news.SupportedLocales
-import dev.alexmester.ui.components.common.countryToFlag
+import dev.alexmester.impl.presentation.locale_picker.components.BuildLocaleItems
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +13,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class LocalePickerViewModel(
     private val type: LocalePickerType,
@@ -45,8 +41,6 @@ class LocalePickerViewModel(
         }
     }
 
-    // ── Private ───────────────────────────────────────────────────────────────
-
     private fun loadItems() {
         viewModelScope.launch {
             val prefs = preferencesDataSource.userPreferences.first()
@@ -56,8 +50,8 @@ class LocalePickerViewModel(
             }
 
             val items = when (type) {
-                LocalePickerType.COUNTRY  -> buildCountryItems()
-                LocalePickerType.LANGUAGE -> buildLanguageItems()
+                LocalePickerType.COUNTRY  -> BuildLocaleItems.buildCountryItems()
+                LocalePickerType.LANGUAGE -> BuildLocaleItems.buildLanguageItems()
             }
 
             _state.update {
@@ -95,33 +89,4 @@ class LocalePickerViewModel(
     private fun emitSideEffect(effect: LocalePickerSideEffect) {
         viewModelScope.launch { _sideEffects.send(effect) }
     }
-
-    // ── Builders ──────────────────────────────────────────────────────────────
-
-    private fun buildCountryItems(): List<LocaleItem> =
-        SupportedLocales.SUPPORTED_COUNTRIES
-            .map { code ->
-                val locale = Locale("", code.uppercase())
-                LocaleItem(
-                    code = code,
-                    displayName = locale.getDisplayCountry(Locale.ENGLISH)
-                        .replaceFirstChar { it.uppercase() },
-                    flag = countryToFlag(code),
-                )
-            }
-            .sortedBy { it.displayName }
-
-    private fun buildLanguageItems(): List<LocaleItem> =
-        SupportedLocales.SUPPORTED_LANGUAGES
-            .map { code ->
-                LocaleItem(
-                    code = code,
-                    displayName = Locale(code)
-                        .getDisplayLanguage(Locale.ENGLISH)
-                        .replaceFirstChar { it.uppercase() },
-                    flag = countryToFlag(LanguageFlagMap.flagCountryFor(code)),
-                )
-            }
-            .sortedBy { it.displayName }
-
 }
