@@ -84,9 +84,12 @@ fun ProfileContent(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             LaskRowMenu(
-                modifier = Modifier,
                 menuName = stringResource(R.string.profile_menu_system),
                 onClick = { onIntent(ProfileIntent.NavigateToSystemSettings) }
+            )
+            LaskRowMenu(
+                menuName = stringResource(R.string.profile_menu_interests),
+                onClick = { onIntent(ProfileIntent.NavigateToInterests) }
             )
         }
     }

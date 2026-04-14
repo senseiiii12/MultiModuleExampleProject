@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import dev.alexmester.api.navigation.ArticleDetailRoute
 import dev.alexmester.api.navigation.ArticleListRoute
+import dev.alexmester.api.navigation.InterestsRoute
 import dev.alexmester.api.navigation.LocalePickerRoute
 import dev.alexmester.api.navigation.SystemRoute
 import dev.alexmester.lask.welcome_screen.WelcomeRoute
@@ -66,6 +67,7 @@ fun NavDestination?.shouldShowBottomBar(): Boolean {
         it.route?.contains(WelcomeRoute::class.qualifiedName!!) == true ||
         it.route?.contains(ArticleListRoute::class.qualifiedName!!) == true ||
         it.route?.contains(SystemRoute::class.qualifiedName!!) == true ||
-        it.route?.contains(LocalePickerRoute::class.qualifiedName!!) == true
+        it.route?.contains(LocalePickerRoute::class.qualifiedName!!) == true ||
+        it.route?.contains(InterestsRoute::class.qualifiedName!!) == true
     }
 }

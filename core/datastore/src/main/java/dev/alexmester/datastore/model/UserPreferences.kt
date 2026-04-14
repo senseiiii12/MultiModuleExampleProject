@@ -15,4 +15,5 @@ data class UserPreferences(
     val lastStreakDate: String? = null,
     val currentXp: Float = 0f,
     val currentLevel: Int = 1,
+    val interests: List<String> = emptyList(),
 )

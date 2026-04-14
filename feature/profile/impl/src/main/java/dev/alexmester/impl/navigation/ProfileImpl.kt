@@ -7,11 +7,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import dev.alexmester.api.navigation.ArticleDetailApi
 import dev.alexmester.api.navigation.ArticleListRoute
+import dev.alexmester.api.navigation.InterestsRoute
 import dev.alexmester.api.navigation.LocalePickerRoute
 import dev.alexmester.api.navigation.ProfileApi
 import dev.alexmester.api.navigation.ProfileRoute
 import dev.alexmester.api.navigation.SystemRoute
 import dev.alexmester.impl.presentation.article_list.ArticleListScreen
+import dev.alexmester.impl.presentation.interests.InterestsScreen
 import dev.alexmester.impl.presentation.locale_picker.LocalePickerScreen
 import dev.alexmester.impl.presentation.profile.ProfileScreen
 import dev.alexmester.impl.presentation.system.SystemScreen
@@ -38,6 +40,9 @@ class ProfileImpl(
                     },
                     onNavigateToSystemSettings = {
                         navController.navigate(SystemRoute)
+                    },
+                    onNavigateToInterests = {
+                        navController.navigate(InterestsRoute)
                     }
                 )
             }
@@ -77,6 +82,12 @@ class ProfileImpl(
             LocalePickerScreen(
                 type = route.type,
                 onBack = { navController.navigateUp() },
+            )
+        }
+
+        navGraphBuilder.composable<InterestsRoute> {
+            InterestsScreen(
+                onBack = { navController.navigateUp() }
             )
         }
     }

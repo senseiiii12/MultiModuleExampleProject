@@ -33,6 +33,9 @@ import dev.alexmester.ui.desing_system.LaskPalette
 import dev.alexmester.ui.desing_system.LaskTheme
 import dev.alexmester.ui.desing_system.LaskTypography
 
+enum class LaskChipButtonVariants{
+    Filters, Interests
+}
 @Composable
 fun LaskChipButton(
     modifier: Modifier = Modifier,
@@ -40,6 +43,7 @@ fun LaskChipButton(
     leadingCountryIcon: String? = null,
     leadingIcon: ImageVector? = null,
     isSelected: Boolean = false,
+    variant: LaskChipButtonVariants = LaskChipButtonVariants.Filters,
     onClick: () -> Unit = {},
     onDismiss: () -> Unit = {},
 ) {
@@ -107,12 +111,28 @@ fun LaskChipButton(
                         style = MaterialTheme.LaskTypography.body1SemiBold,
                         color = MaterialTheme.LaskColors.textPrimary
                     )
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = null,
-                        tint = MaterialTheme.LaskColors.textPrimary
-                    )
+                    when(variant){
+                        LaskChipButtonVariants.Filters ->{
+                            Icon(
+                                modifier = Modifier.size(20.dp),
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = null,
+                                tint = MaterialTheme.LaskColors.textPrimary
+                            )
+                        }
+
+                        LaskChipButtonVariants.Interests -> {
+                            Icon(
+                                modifier = Modifier
+                                    .size(16.dp)
+                                    .clip(CircleShape)
+                                    .clickable { onDismiss() },
+                                imageVector = ImageVector.vectorResource(R.drawable.ic_cancel),
+                                contentDescription = null,
+                                tint = LaskPalette.TextPrimaryDark
+                            )
+                        }
+                    }
                 }
             }
         }

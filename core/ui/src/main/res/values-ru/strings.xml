@@ -52,6 +52,7 @@
     <string name="profile_menu_clapped_articles">Понравившиеся Статьи</string>
     <string name="profile_menu_read_articles">Прочитанные Статьи</string>
     <string name="profile_menu_system">Система</string>
+    <string name="profile_menu_interests">Интересы</string>
 
     <!-- Locale -->
     <string name="locale_title_country">Страна</string>

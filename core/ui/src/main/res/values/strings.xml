@@ -52,6 +52,7 @@
     <string name="profile_menu_clapped_articles">Clapped Articles</string>
     <string name="profile_menu_read_articles">Read Articles</string>
     <string name="profile_menu_system">System</string>
+    <string name="profile_menu_interests">Interests</string>
 
     <!-- Locale -->
     <string name="locale_title_country">Country</string>

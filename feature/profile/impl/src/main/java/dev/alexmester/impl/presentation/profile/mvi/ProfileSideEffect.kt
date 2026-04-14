@@ -5,4 +5,5 @@ import dev.alexmester.api.navigation.ArticleListType
 sealed class ProfileSideEffect {
     data class NavigateToArticleList(val type: ArticleListType) : ProfileSideEffect()
     data object NavigateToSystemSettings: ProfileSideEffect()
+    data object NavigateToInterests : ProfileSideEffect()
 }

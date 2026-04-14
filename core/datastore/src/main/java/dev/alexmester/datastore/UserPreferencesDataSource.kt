@@ -31,7 +31,11 @@ class UserPreferencesDataSource(
         private val KEY_LAST_STREAK_DATE = stringPreferencesKey("last_streak_date")
         private val KEY_CURRENT_XP = floatPreferencesKey("current_xp")
         private val KEY_CURRENT_LEVEL = intPreferencesKey("current_level")
+        private val KEY_INTERESTS = stringPreferencesKey("interests")
+
+        private const val DELIMITER = "|||"
     }
+
 
     val userPreferences: Flow<UserPreferences> = dataStore.data.map { prefs ->
         UserPreferences(
@@ -46,6 +50,10 @@ class UserPreferencesDataSource(
             lastStreakDate = prefs[KEY_LAST_STREAK_DATE],
             currentXp = prefs[KEY_CURRENT_XP] ?: 0f,
             currentLevel = prefs[KEY_CURRENT_LEVEL] ?: 1,
+            interests = prefs[KEY_INTERESTS]
+                ?.split(DELIMITER)
+                ?.filter { it.isNotBlank() }
+                ?: emptyList(),
         )
     }
 
@@ -114,6 +122,30 @@ class UserPreferencesDataSource(
 
             prefs[KEY_STREAK_COUNT] = newStreak
             prefs[KEY_LAST_STREAK_DATE] = today
+        }
+    }
+
+    suspend fun addInterest(keyword: String) {
+        dataStore.edit { prefs ->
+            val current = prefs[KEY_INTERESTS]
+                ?.split(DELIMITER)
+                ?.filter { it.isNotBlank() }
+                ?.toMutableList()
+                ?: mutableListOf()
+            if (keyword.trim().isNotBlank() && keyword.trim() !in current) {
+                current.add(keyword.trim())
+                prefs[KEY_INTERESTS] = current.joinToString(DELIMITER)
+            }
+        }
+    }
+
+    suspend fun removeInterest(keyword: String) {
+        dataStore.edit { prefs ->
+            val current = prefs[KEY_INTERESTS]
+                ?.split(DELIMITER)
+                ?.filter { it.isNotBlank() && it != keyword }
+                ?: emptyList()
+            prefs[KEY_INTERESTS] = current.joinToString(DELIMITER)
         }
     }
 

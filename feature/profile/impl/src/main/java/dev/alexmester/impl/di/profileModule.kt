@@ -8,6 +8,7 @@ import dev.alexmester.impl.domain.interactor.ArticleListInteractor
 import dev.alexmester.impl.domain.interactor.ProfileInteractor
 import dev.alexmester.impl.domain.repository.ArticleListRepository
 import dev.alexmester.impl.presentation.article_list.mvi.ArticleListViewModel
+import dev.alexmester.impl.presentation.interests.mvi.InterestsViewModel
 import dev.alexmester.impl.presentation.locale_picker.mvi.LocalePickerViewModel
 import dev.alexmester.impl.presentation.profile.mvi.ProfileViewModel
 import dev.alexmester.impl.presentation.system.mvi.SystemViewModel
@@ -44,6 +45,9 @@ val profileModule = module {
             type = type,
             interactor = get(),
         )
+    }
+    viewModel {
+        InterestsViewModel(preferencesDataSource = get())
     }
     viewModel {
         SystemViewModel(preferencesDataSource = get())

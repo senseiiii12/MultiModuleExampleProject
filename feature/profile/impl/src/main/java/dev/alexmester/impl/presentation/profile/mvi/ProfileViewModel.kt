@@ -52,6 +52,9 @@ class ProfileViewModel(
 
             is ProfileIntent.NavigateToSystemSettings ->
                 emitSideEffect(ProfileSideEffect.NavigateToSystemSettings)
+
+            is ProfileIntent.NavigateToInterests ->
+                emitSideEffect(ProfileSideEffect.NavigateToInterests)
         }
     }
 

@@ -11,4 +11,5 @@ sealed class ProfileIntent {
     data object NavigateToReadArticles : ProfileIntent()
     data object NavigateToClappedArticles : ProfileIntent()
     data object NavigateToSystemSettings : ProfileIntent()
+    data object NavigateToInterests : ProfileIntent()
 }
