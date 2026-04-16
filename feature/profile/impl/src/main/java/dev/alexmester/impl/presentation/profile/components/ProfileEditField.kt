@@ -57,8 +57,9 @@ fun ProfileEditField(
                     interactionSource = remember { MutableInteractionSource() },
                     shape = RoundedCornerShape(8.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.LaskColors.textLink,
-                        unfocusedBorderColor = MaterialTheme.LaskColors.textLink
+                        focusedBorderColor = MaterialTheme.LaskColors.brand_blue,
+                        unfocusedBorderColor = MaterialTheme.LaskColors.brand_blue,
+                        cursorColor = MaterialTheme.LaskColors.brand_blue
                     )
                 )
             }

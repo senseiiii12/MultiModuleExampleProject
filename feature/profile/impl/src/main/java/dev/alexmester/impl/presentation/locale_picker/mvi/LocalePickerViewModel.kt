@@ -53,50 +53,58 @@ class LocalePickerViewModel(
                 country = code,
             )
         }
-        _state.update { it.copy(pendingCode = code, compatibilityWarning = warning) }
+        _state.update { it.copy(selectedCode = code, compatibilityWarning = warning) }
     }
 
     private fun onResolveCompatibility(adaptSelf: Boolean) {
         val warning = _state.value.compatibilityWarning ?: return
-        when (type) {
-            LocalePickerType.LANGUAGE -> {
-                if (adaptSelf) {
-                    _state.update {
-                        it.copy(
-                            pendingCode = warning.suggestedLanguage,
-                            compatibilityWarning = null,
+        val pending = _state.value.selectedCode
+        viewModelScope.launch {
+            when (type) {
+                LocalePickerType.LANGUAGE -> {
+                    if (adaptSelf) {
+                        _state.update {
+                            it.copy(
+                                selectedCode = warning.suggestedLanguage,
+                                compatibilityWarning = null,
+                            )
+                        }
+                    } else {
+                        preferencesDataSource.updateLocaleManually(
+                            country = warning.suggestedCountry,
+                            language = pending,
                         )
+                        _state.update {
+                            it.copy(
+                                currentCode = pending,
+                                compatibilityWarning = null,
+                            )
+                        }
+                        emitSideEffect(LocalePickerSideEffect.NavigateBack)
                     }
-                    emitSideEffect(
-                        LocalePickerSideEffect.ApplyWithLanguageOverride(warning.suggestedLanguage)
-                    )
-                    applySelection()
-                } else {
-                    _state.update { it.copy(compatibilityWarning = null) }
-                    emitSideEffect(
-                        LocalePickerSideEffect.ApplyWithCountryOverride(warning.suggestedCountry)
-                    )
-                    applySelection()
                 }
-            }
-            LocalePickerType.COUNTRY -> {
-                if (adaptSelf) {
-                    _state.update {
-                        it.copy(
-                            pendingCode = warning.suggestedCountry,
-                            compatibilityWarning = null,
+
+                LocalePickerType.COUNTRY -> {
+                    if (adaptSelf) {
+                        _state.update {
+                            it.copy(
+                                selectedCode = warning.suggestedCountry,
+                                compatibilityWarning = null,
+                            )
+                        }
+                    } else {
+                        preferencesDataSource.updateLocaleManually(
+                            country = pending,
+                            language = warning.suggestedLanguage,
                         )
+                        _state.update {
+                            it.copy(
+                                currentCode = pending,
+                                compatibilityWarning = null,
+                            )
+                        }
+                        emitSideEffect(LocalePickerSideEffect.NavigateBack)
                     }
-                    emitSideEffect(
-                        LocalePickerSideEffect.ApplyWithCountryOverride(warning.suggestedCountry)
-                    )
-                    applySelection()
-                } else {
-                    _state.update { it.copy(compatibilityWarning = null) }
-                    emitSideEffect(
-                        LocalePickerSideEffect.ApplyWithLanguageOverride(warning.suggestedLanguage)
-                    )
-                    applySelection()
                 }
             }
         }
@@ -120,8 +128,8 @@ class LocalePickerViewModel(
             _state.update {
                 it.copy(
                     items = items,
+                    currentCode = currentCode,
                     selectedCode = currentCode,
-                    pendingCode = currentCode,
                     otherLocaleCode = otherCode,
                 )
             }
@@ -129,11 +137,11 @@ class LocalePickerViewModel(
     }
 
     private fun applySelection() {
-        val pending = _state.value.pendingCode
+        val pending = _state.value.selectedCode
         if (pending.isEmpty()) return
         viewModelScope.launch {
             saveLocale(pending)
-            _state.update { it.copy(selectedCode = pending) }
+            _state.update { it.copy(currentCode = pending) }
             emitSideEffect(LocalePickerSideEffect.NavigateBack)
         }
     }

@@ -47,7 +47,7 @@ fun ProfileAvatar(
             .then(
                 if (isEdit) Modifier.border(
                     width = 2.dp,
-                    color = MaterialTheme.LaskColors.textLink,
+                    color = MaterialTheme.LaskColors.brand_blue,
                     shape = CircleShape,
                 ) else Modifier
             )
@@ -64,7 +64,7 @@ fun ProfileAvatar(
                 Icon(
                     imageVector = Icons.Default.AddPhotoAlternate,
                     contentDescription = null,
-                    tint = MaterialTheme.LaskColors.textLink,
+                    tint = MaterialTheme.LaskColors.brand_blue,
                 )
             }
             Box(

@@ -58,9 +58,10 @@
     <string name="interests_empty_message">Add interests in\nProfile -> Interests</string>
     <string name="interests_just_for_you">Just For You</string>
 
-    <!-- Locale -->
-    <string name="locale_title_country">Country</string>
-    <string name="locale_title_language">Language</string>
+    <!-- System -->
+    <string name="system_theme">Theme</string>
+    <string name="system_locale_country">Country</string>
+    <string name="system_locale_language">Language</string>
 
 
 

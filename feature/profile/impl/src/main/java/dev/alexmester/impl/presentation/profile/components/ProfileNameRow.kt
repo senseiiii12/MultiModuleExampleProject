@@ -81,7 +81,7 @@ fun ProfileNameRow(
                         )
                         LaskEditButton(
                             modifier = Modifier.size(30.dp),
-                            tint = MaterialTheme.LaskColors.textLink,
+                            tint = MaterialTheme.LaskColors.brand_blue,
                             onClick = { onIntent(ProfileIntent.OnInitEditMode) }
                         )
                     }
@@ -100,7 +100,7 @@ fun ProfileNameRow(
             Text(
                 text = levelData.title,
                 style = MaterialTheme.LaskTypography.body1,
-                color = MaterialTheme.LaskColors.textLink,
+                color = MaterialTheme.LaskColors.brand_blue,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )

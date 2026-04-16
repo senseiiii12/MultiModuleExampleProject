@@ -9,17 +9,17 @@ import dev.alexmester.utils.CompatibilityWarning
 data class LocalePickerState(
     val type: LocalePickerType,
     val items: List<LocaleItem> = emptyList(),
+    val currentCode: String = "",
     val selectedCode: String = "",
-    val pendingCode: String = "",
     val compatibilityWarning: CompatibilityWarning? = null,
     val otherLocaleCode: String = "",
 ) {
     val title: UiText
         get() = when (type) {
-            LocalePickerType.COUNTRY  -> UiText.StringResource(R.string.locale_title_country)
-            LocalePickerType.LANGUAGE -> UiText.StringResource(R.string.locale_title_language)
+            LocalePickerType.COUNTRY  -> UiText.StringResource(R.string.system_locale_country)
+            LocalePickerType.LANGUAGE -> UiText.StringResource(R.string.system_locale_language)
         }
 
     val isApplyEnabled: Boolean
-        get() = pendingCode.isNotEmpty() && pendingCode != selectedCode
+        get() = selectedCode.isNotEmpty() && selectedCode != currentCode
 }

@@ -33,8 +33,6 @@ import java.util.Locale
 fun LocalePickerScreen(
     type: LocalePickerType,
     onBack: () -> Unit,
-    onCountryOverride: (String) -> Unit = {},
-    onLanguageOverride: (String) -> Unit = {},
     viewModel: LocalePickerViewModel = koinViewModel(
         parameters = { parametersOf(type) }
     ),
@@ -45,14 +43,6 @@ fun LocalePickerScreen(
         viewModel.sideEffects.collect { effect ->
             when (effect) {
                 LocalePickerSideEffect.NavigateBack -> onBack()
-                is LocalePickerSideEffect.ApplyWithCountryOverride -> {
-                    onCountryOverride(effect.country)
-//                    onBack()
-                }
-                is LocalePickerSideEffect.ApplyWithLanguageOverride -> {
-                    onLanguageOverride(effect.language)
-//                    onBack()
-                }
             }
         }
     }
@@ -94,6 +84,8 @@ internal fun LocalePickerScreenContent(
                 state.compatibilityWarning?.let { warning ->
                     CompatibilityWarningBanner(
                         type = state.type,
+                        currentCode = state.currentCode,
+                        selectedCode = state.selectedCode,
                         warning = warning,
                         onAdaptSelf = { onIntent(LocalePickerIntent.ResolveCompatibility(adaptSelf = true)) },
                         onAdaptOther = { onIntent(LocalePickerIntent.ResolveCompatibility(adaptSelf = false)) },
@@ -108,7 +100,7 @@ internal fun LocalePickerScreenContent(
             ) {
                 items(items = state.items, key = { it.code }) { item ->
                     LaskLocaleRowItem(
-                        isSelected = item.code == state.pendingCode,
+                        isSelected = item.code == state.selectedCode,
                         item = item,
                         onClick = { onIntent(LocalePickerIntent.SelectItem(item.code)) },
                     )
@@ -121,6 +113,8 @@ internal fun LocalePickerScreenContent(
 @Composable
 private fun CompatibilityWarningBanner(
     type: LocalePickerType,
+    currentCode: String,
+    selectedCode: String,
     warning: CompatibilityWarning,
     onAdaptSelf: () -> Unit,
     onAdaptOther: () -> Unit,
@@ -131,17 +125,25 @@ private fun CompatibilityWarningBanner(
     val suggestedLanguageName = Locale(warning.suggestedLanguage).getDisplayLanguage(Locale.ENGLISH)
         .replaceFirstChar { it.uppercase() }
 
-    // Тексты кнопок зависят от того, что выбирали
+    val currentCountryName = Locale("", currentCode.uppercase()).displayCountry
+    val currentLaunguageName = Locale(currentCode).getDisplayLanguage(Locale.ENGLISH)
+        .replaceFirstChar { it.uppercase() }
+
+    val selectedCountryName = Locale("", selectedCode.uppercase()).displayCountry
+    val selectedLaunguageName = Locale(selectedCode).getDisplayLanguage(Locale.ENGLISH)
+        .replaceFirstChar { it.uppercase() }
+
     val selfLabel: String
     val otherLabel: String
+
     when (type) {
         LocalePickerType.LANGUAGE -> {
-            selfLabel = "Сменить язык → $suggestedLanguageName"
-            otherLabel = "Сменить страну → $suggestedCountryName"
+            selfLabel = "Сменить язык для $currentCountryName → $suggestedLanguageName"
+            otherLabel = "Сменить страну для $selectedLaunguageName → $suggestedCountryName"
         }
         LocalePickerType.COUNTRY -> {
-            selfLabel = "Сменить страну → $suggestedCountryName"
-            otherLabel = "Сменить язык → $suggestedLanguageName"
+            selfLabel = "Сменить страну для $currentLaunguageName → $suggestedCountryName"
+            otherLabel = "Сменить язык для $selectedCountryName → $suggestedLanguageName"
         }
     }
 
@@ -188,6 +190,7 @@ private fun CompatibilityWarningBanner(
                     Text(
                         text = selfLabel,
                         style = MaterialTheme.LaskTypography.footnote,
+                        color = MaterialTheme.LaskColors.textPrimary,
                         maxLines = 2,
                     )
                 }
@@ -198,7 +201,8 @@ private fun CompatibilityWarningBanner(
                     Text(
                         text = otherLabel,
                         style = MaterialTheme.LaskTypography.footnote,
-                        maxLines = 2,
+                        color = MaterialTheme.LaskColors.textPrimary,
+                        maxLines = 3,
                     )
                 }
             }

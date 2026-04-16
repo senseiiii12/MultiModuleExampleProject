@@ -18,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alexmester.api.navigation.LocalePickerType
@@ -28,6 +29,7 @@ import dev.alexmester.impl.presentation.system.mvi.SystemIntent
 import dev.alexmester.impl.presentation.system.mvi.SystemSideEffect
 import dev.alexmester.impl.presentation.system.mvi.SystemState
 import dev.alexmester.impl.presentation.system.mvi.SystemViewModel
+import dev.alexmester.ui.R
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
 import org.koin.compose.viewmodel.koinViewModel
@@ -36,21 +38,14 @@ import org.koin.compose.viewmodel.koinViewModel
 fun SystemScreen(
     onBack: () -> Unit,
     onNavigateToLocalePicker: (LocalePickerType) -> Unit,
-    countryOverride: String? = null,
-    languageOverride: String? = null,
     viewModel: SystemViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(countryOverride, languageOverride) {
-        viewModel.applyLocaleOverride(countryOverride, languageOverride)
-    }
-
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
             when (effect) {
-                is SystemSideEffect.NavigateBack ->
-                    onBack()
+                is SystemSideEffect.NavigateBack -> onBack()
                 is SystemSideEffect.NavigateToLocalePicker ->
                     onNavigateToLocalePicker(effect.type)
             }
@@ -73,7 +68,7 @@ internal fun SystemScreenContent(
         topBar = {
             SystemTopBar(
                 modifier = Modifier,
-                title = "System",
+                title = stringResource(R.string.profile_menu_system),
                 onBack = { onIntent(SystemIntent.Back) }
             )
         },
@@ -94,7 +89,7 @@ internal fun SystemScreenContent(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = "Theme",
+                    text = stringResource(R.string.system_theme),
                     style = MaterialTheme.LaskTypography.body1,
                     color = MaterialTheme.LaskColors.textPrimary,
                     modifier = Modifier,
@@ -106,12 +101,12 @@ internal fun SystemScreenContent(
                 )
             }
             SettingsValueRow(
-                label = "Language",
+                label = stringResource(R.string.system_locale_language),
                 value = state.languageDisplayName,
                 onClick = { onIntent(SystemIntent.NavigateToLanguage) },
             )
             SettingsValueRow(
-                label = "Country",
+                label = stringResource(R.string.system_locale_country),
                 value = state.countryDisplayName,
                 onClick = { onIntent(SystemIntent.NavigateToCountry) },
             )

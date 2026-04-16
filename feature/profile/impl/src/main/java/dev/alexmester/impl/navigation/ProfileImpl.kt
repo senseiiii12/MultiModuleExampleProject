@@ -73,30 +73,15 @@ class ProfileImpl(
             LocalePickerScreen(
                 type = route.type,
                 onBack = { navController.navigateUp() },
-                onCountryOverride = { country ->
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("country_override", country)
-                },
-                onLanguageOverride = { language ->
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("language_override", language)
-                },
             )
         }
 
         navGraphBuilder.composable<SystemRoute> {
-            val countryOverride = it.savedStateHandle.remove<String>("country_override")
-            val languageOverride = it.savedStateHandle.remove<String>("language_override")
-
             SystemScreen(
                 onBack = { navController.navigateUp() },
                 onNavigateToLocalePicker = { type ->
                     navController.navigate(LocalePickerRoute(type))
                 },
-                countryOverride = countryOverride,
-                languageOverride = languageOverride,
             )
         }
 
