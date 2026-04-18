@@ -8,12 +8,14 @@ import androidx.navigation.compose.composable
 import dev.alexmester.api.navigation.ArticleDetailApi
 import dev.alexmester.api.navigation.ExploreApi
 import dev.alexmester.api.navigation.ExploreRoute
+import dev.alexmester.api.navigation.SearchApi
 import dev.alexmester.impl.presentstion.ExploreScreen
 import dev.alexmester.ui.transition.SharedTransitionLocals
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 class ExploreImpl(
     private val articleDetailApi: ArticleDetailApi,
+    private val searchApi: SearchApi,
 ) : ExploreApi {
 
     override fun exploreRoute() = ExploreRoute
@@ -34,6 +36,9 @@ class ExploreImpl(
                                 articleUrl = url,
                             )
                         )
+                    },
+                    onSearch = {
+                        navController.navigate(searchApi.searchRoute())
                     }
                 )
             }

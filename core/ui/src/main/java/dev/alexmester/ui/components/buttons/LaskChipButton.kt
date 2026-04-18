@@ -40,7 +40,7 @@ enum class LaskChipButtonVariants{
 fun LaskChipButton(
     modifier: Modifier = Modifier,
     text: String,
-    leadingCountryIcon: String? = null,
+    leadingLocaleIcon: String? = null,
     leadingIcon: ImageVector? = null,
     isSelected: Boolean = false,
     variant: LaskChipButtonVariants = LaskChipButtonVariants.Filters,
@@ -73,9 +73,9 @@ fun LaskChipButton(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    leadingCountryIcon?.let {
+                    leadingLocaleIcon?.let {
                         Text(
-                            text = leadingCountryIcon,
+                            text = leadingLocaleIcon,
                             style = MaterialTheme.LaskTypography.footnote,
                         )
                     }
@@ -146,7 +146,7 @@ private fun LaskChipButtonPreviewSeleceted1() {
         LaskChipButton(
             modifier = Modifier,
             text = "United State",
-            leadingCountryIcon = countryCodeToFlagEmoji("us"),
+            leadingLocaleIcon = countryCodeToFlagEmoji("us"),
             leadingIcon = null,
             isSelected = true,
             onClick = { },
@@ -161,7 +161,7 @@ private fun LaskChipButtonPreviewSeleceted2() {
         LaskChipButton(
             modifier = Modifier,
             text = "Science",
-            leadingCountryIcon = null,
+            leadingLocaleIcon = null,
             leadingIcon = Icons.Default.Category,
             isSelected = true,
             onClick = { },
@@ -176,7 +176,7 @@ private fun LaskChipButtonPreviewUnSeleceted() {
         LaskChipButton(
             modifier = Modifier,
             text = "Country",
-            leadingCountryIcon = null,
+            leadingLocaleIcon = null,
             leadingIcon = null,
             isSelected = false,
             onClick = { },

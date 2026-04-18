@@ -29,6 +29,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
         create("benchmark") {
             initWith(buildTypes.getByName("release"))
@@ -54,6 +55,7 @@ dependencies {
     implementation(project(":feature:article_detail:impl"))
     implementation(project(":feature:bookmarks:impl"))
     implementation(project(":feature:profile:impl"))
+    implementation(project(":feature:search:impl"))
 
 
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")

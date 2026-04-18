@@ -49,4 +49,7 @@ include(":feature:profile:impl")
 include(":feature:explore:api")
 include(":feature:explore:impl")
 
+include(":feature:search:api")
+include(":feature:search:impl")
+
 include(":macrobenchmark")

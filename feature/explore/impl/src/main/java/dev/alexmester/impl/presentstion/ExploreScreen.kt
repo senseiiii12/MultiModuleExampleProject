@@ -49,6 +49,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ExploreScreen(
     viewModel: ExploreViewModel = koinViewModel(),
     onArticleClick: (articleId: Long, articleUrl: String) -> Unit,
+    onSearch: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val readArticleIds by viewModel.readArticleIds.collectAsStateWithLifecycle()
@@ -77,6 +78,7 @@ fun ExploreScreen(
         snackbarHostState = snackbarHostState,
         onIntent = viewModel::handleIntent,
         stateRefreshBox = stateRefreshBox,
+        onSearch = onSearch
     )
 }
 
@@ -87,11 +89,12 @@ private fun ExploreScreenContent(
     snackbarHostState: SnackbarHostState,
     stateRefreshBox: PullToRefreshState,
     onIntent: (ExploreIntent) -> Unit,
+    onSearch: () -> Unit,
 ) {
     Scaffold(
         topBar = {
             ExploreTopBar(
-                onSearch = {}
+                onSearch = onSearch
             )
         }
     ) { paddingValues ->

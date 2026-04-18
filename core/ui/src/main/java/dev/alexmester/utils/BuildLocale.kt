@@ -9,12 +9,11 @@ import java.util.Locale
 object BuildLocale {
 
     fun languageCodeToFullLanguageName(languageCode: String): String =
-        Locale(languageCode).getDisplayLanguage(Locale.ENGLISH)
+        Locale(languageCode.uppercase()).getDisplayLanguage(Locale.ENGLISH)
             .replaceFirstChar { it.uppercase() }
 
     fun countryCodeToFullCountryName(countryCode: String): String =
-        Locale("", countryCode
-            .uppercase()).getDisplayCountry(Locale.ENGLISH)
+        Locale("", countryCode.uppercase()).getDisplayCountry(Locale.ENGLISH)
             .replaceFirstChar { it.uppercase() }
 
     fun buildCountryItems(): List<LocaleItem> =

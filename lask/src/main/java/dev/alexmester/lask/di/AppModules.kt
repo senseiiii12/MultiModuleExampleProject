@@ -7,6 +7,7 @@ import dev.alexmester.impl.di.bookmarksModule
 import dev.alexmester.impl.di.exploreModule
 import dev.alexmester.impl.di.newsFeedModule
 import dev.alexmester.impl.di.profileModule
+import dev.alexmester.impl.di.searchModule
 import dev.alexmester.lask.splash_screen.splashModule
 import dev.alexmester.lask.theme_switch.themeSwitchModule
 import dev.alexmester.network.di.networkModule
@@ -27,5 +28,6 @@ object AppModules {
         articleDetailModule,
         bookmarksModule,
         profileModule,
+        searchModule
     )
 }

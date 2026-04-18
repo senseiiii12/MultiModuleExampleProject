@@ -15,6 +15,7 @@ android {
 dependencies {
     api(project(":feature:explore:api"))
     implementation(project(":feature:article_detail:api"))
+    implementation(project(":feature:search:api"))
 
     implementation(project(":core:network"))
     implementation(project(":core:database"))
