@@ -1,6 +1,6 @@
 package dev.alexmester.ui.components.locale
 
-import dev.alexmester.models.news.LanguageFlagMap
+import dev.alexmester.models.locale.LanguageFlagMap
 
 fun countryCodeToFlagEmoji(code: String): String {
     return code

@@ -7,6 +7,7 @@
     <string name="error_rate_limit">Request limit exceeded. Try again later</string>
     <string name="error_unknown">Failed to load news</string>
     <string name="error_article_not_found">Article not found</string>
+    <string name="error_retry">Retry</string>
 
     <!-- bottombar tabs -->
     <string name="tab_top_news">Trends</string>
@@ -55,7 +56,7 @@
     <string name="profile_menu_interests">Interests</string>
 
     <!-- Interests -->
-    <string name="interests_empty_message">Add interests in\nProfile -> Interests</string>
+    <string name="interests_empty_message">Add interests in\nProfile → Interests</string>
     <string name="interests_just_for_you">Just For You</string>
     <string name="interests_text_field_placeholder">Write you interests</string>
     <string name="interests_add">Add</string>
@@ -66,6 +67,13 @@
     <string name="system_theme">Theme</string>
     <string name="system_locale_country">Article Country</string>
     <string name="system_locale_language">Article Language</string>
+
+    <!-- Search -->
+    <string name="search_category">Category</string>
+    <string name="search_country">Country</string>
+    <string name="search_language">Language</string>
+    <string name="search_date_period">Date period</string>
+    <string name="search_sort">Sort</string>
 
 
 

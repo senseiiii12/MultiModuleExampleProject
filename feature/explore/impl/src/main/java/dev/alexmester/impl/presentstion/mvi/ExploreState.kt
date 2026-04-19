@@ -5,8 +5,16 @@ import dev.alexmester.ui.uitext.UiText
 
 sealed interface ExploreState {
     data object Loading : ExploreState
-    data class Error(val message: UiText, val isRefreshing: Boolean = false) : ExploreState
-    data object EmptyInterests : ExploreState
+
+    data class Error(
+        val message: UiText,
+        val isRefreshing: Boolean = false
+    ) : ExploreState
+
+    data class EmptyInterests(
+        val isRefreshing: Boolean = false
+    ) : ExploreState
+
     data class Content(
         val articles: List<NewsArticle>,
         val isRefreshing: Boolean = false,

@@ -1,8 +1,8 @@
 package dev.alexmester.utils
 
 import dev.alexmester.models.locale.LocaleItem
-import dev.alexmester.models.news.LanguageFlagMap
-import dev.alexmester.models.news.SupportedLocales
+import dev.alexmester.models.locale.LanguageFlagMap
+import dev.alexmester.models.locale.SupportedLocales
 import dev.alexmester.ui.components.locale.countryCodeToFlagEmoji
 import java.util.Locale
 

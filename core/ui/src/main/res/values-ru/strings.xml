@@ -7,6 +7,7 @@
     <string name="error_rate_limit">Превышен лимит запросов. Попробуйте позже</string>
     <string name="error_unknown">Ошибка загрузки новостей</string>
     <string name="error_article_not_found">Статья не найдена</string>
+    <string name="error_retry">Повторить</string>
 
     <!-- bottombar tabs -->
     <string name="tab_top_news">Тренды</string>
@@ -55,7 +56,7 @@
     <string name="profile_menu_interests">Интересы</string>
 
     <!-- Interests -->
-    <string name="interests_empty_message">Добавьте свои интересы в\nПрофиль -> Интересы</string>
+    <string name="interests_empty_message">Добавьте свои интересы в\nПрофиль → Интересы</string>
     <string name="interests_just_for_you">Для Тебя</string>
     <string name="interests_text_field_placeholder">Напишите ваши интересы</string>
     <string name="interests_add">Добавить</string>

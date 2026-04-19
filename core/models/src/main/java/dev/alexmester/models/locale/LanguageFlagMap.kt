@@ -1,4 +1,4 @@
-package dev.alexmester.models.news
+package dev.alexmester.models.locale
 
 /**
  * Маппинг кода языка → код страны для отображения emoji флага.

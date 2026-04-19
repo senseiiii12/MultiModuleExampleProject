@@ -1,4 +1,4 @@
-package dev.alexmester.impl.presentation.components
+package dev.alexmester.impl.presentation.components.filter_picker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,14 +10,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.alexmester.impl.presentation.components.FilterPickerTopBar
 import dev.alexmester.models.locale.LocaleItem
+import dev.alexmester.ui.R
 import dev.alexmester.ui.components.locale.LaskLocaleRowItem
 import dev.alexmester.ui.desing_system.LaskColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun SortPickerScreen(
+internal fun SortDirectionPickerScreen(
     sortAscending: Boolean,
     onSelect: (Boolean) -> Unit,
     onBack: () -> Unit,
@@ -25,7 +28,7 @@ internal fun SortPickerScreen(
     Scaffold(
         topBar = {
             FilterPickerTopBar(
-                title = "Sort",
+                title = stringResource(R.string.search_sort),
                 isApplyEnabled = false,
                 onBack = onBack,
                 onApply = {},

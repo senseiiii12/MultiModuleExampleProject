@@ -1,4 +1,4 @@
-package dev.alexmester.impl.presentation.components
+package dev.alexmester.impl.presentation.components.filter_picker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,15 +11,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.alexmester.impl.presentation.components.FilterPickerTopBar
+import dev.alexmester.models.categories.SearchCategory
 import dev.alexmester.ui.components.locale.LaskLocaleRowItem
 import dev.alexmester.models.locale.LocaleItem
+import dev.alexmester.ui.R
 import dev.alexmester.ui.desing_system.LaskColors
-
-val SEARCH_CATEGORIES = listOf(
-    "politics", "sports", "business", "technology", "entertainment",
-    "health", "science", "lifestyle", "travel", "culture", "education", "environment"
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,18 +27,18 @@ internal fun CategoryPickerScreen(
     onSelect: (String?) -> Unit,
     onBack: () -> Unit,
 ) {
-    val items = SEARCH_CATEGORIES.map { cat ->
+    val items = SearchCategory.entries.map {
         LocaleItem(
-            code = cat,
-            displayName = cat.replaceFirstChar { it.uppercase() },
-            flag = categoryEmoji(cat),
+            code = it.code,
+            displayName = it.displayName,
+            flag = it.emoji
         )
     }
 
     Scaffold(
         topBar = {
             FilterPickerTopBar(
-                title = "Category",
+                title = stringResource(R.string.search_category),
                 isApplyEnabled = false,
                 onBack = onBack,
                 onApply = {},
@@ -55,7 +54,6 @@ internal fun CategoryPickerScreen(
                 .padding(paddingValues),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         ) {
-            // "All" option to clear
             item {
                 LaskLocaleRowItem(
                     isSelected = selectedCategory == null,
@@ -72,20 +70,4 @@ internal fun CategoryPickerScreen(
             }
         }
     }
-}
-
-private fun categoryEmoji(category: String): String = when (category) {
-    "politics"      -> "🏛️"
-    "sports"        -> "⚽"
-    "business"      -> "💼"
-    "technology"    -> "💻"
-    "entertainment" -> "🎬"
-    "health"        -> "🏥"
-    "science"       -> "🔬"
-    "lifestyle"     -> "🌿"
-    "travel"        -> "✈️"
-    "culture"       -> "🎨"
-    "education"     -> "📚"
-    "environment"   -> "🌍"
-    else            -> "📰"
 }

@@ -75,7 +75,7 @@ class ExploreViewModel(
         viewModelScope.launch {
             val query = interactor.getExploreQueryOrNull()
             if (query.isNullOrBlank()) {
-                _state.value = ExploreState.EmptyInterests
+                _state.value = ExploreState.EmptyInterests(isRefreshing = false)
                 return@launch
             }
             if (!_state.value.isContent) {
@@ -90,11 +90,18 @@ class ExploreViewModel(
             when (current) {
                 is ExploreState.Content -> current.copy(isRefreshing = true, isOffline = false)
                 is ExploreState.Error -> current.copy(isRefreshing = true)
+                is ExploreState.EmptyInterests -> current.copy(isRefreshing = true)
                 else -> current
             }
         }
 
         viewModelScope.launch {
+            val query = interactor.getExploreQueryOrNull()
+            if (query.isNullOrBlank()) {
+                _state.value = ExploreState.EmptyInterests()
+                return@launch
+            }
+
             val result = interactor.refresh(pageSize = pageSize)
             when (result) {
                 is AppResult.Success -> {

@@ -10,9 +10,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -29,6 +32,15 @@ class SearchViewModel(
 
     private val _sideEffects = Channel<SearchSideEffect>(Channel.BUFFERED)
     val sideEffects = _sideEffects.receiveAsFlow()
+
+    val readArticleIds: StateFlow<Set<Long>> = interactor
+        .getReadArticleIdsFlow()
+        .map { it.toSet() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptySet(),
+        )
 
     private var debounceJob: Job? = null
     private var loadMoreJob: Job? = null

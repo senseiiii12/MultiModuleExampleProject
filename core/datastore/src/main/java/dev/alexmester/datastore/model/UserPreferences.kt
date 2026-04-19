@@ -1,6 +1,6 @@
 package dev.alexmester.datastore.model
 
-import dev.alexmester.models.news.SupportedLocales
+import dev.alexmester.models.locale.SupportedLocales
 
 data class UserPreferences(
     val defaultCountry: String = SupportedLocales.FALLBACK_COUNTRY,

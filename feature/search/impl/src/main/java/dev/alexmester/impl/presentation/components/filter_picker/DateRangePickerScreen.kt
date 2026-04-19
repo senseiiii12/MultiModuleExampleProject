@@ -1,4 +1,4 @@
-package dev.alexmester.impl.presentation.components
+package dev.alexmester.impl.presentation.components.filter_picker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -15,7 +15,10 @@ import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.alexmester.impl.presentation.components.FilterPickerTopBar
+import dev.alexmester.ui.R
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.ui.desing_system.LaskTypography
 import java.time.Instant
@@ -67,7 +70,7 @@ internal fun DateRangePickerScreen(
     Scaffold(
         topBar = {
             FilterPickerTopBar(
-                title = "Date period",
+                title = stringResource(R.string.search_date_period),
                 isApplyEnabled = isApplyEnabled,
                 onBack = onBack,
                 onApply = {

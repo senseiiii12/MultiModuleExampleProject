@@ -1,6 +1,5 @@
 package dev.alexmester.impl.presentation.components.filter_picker
 
-import dev.alexmester.impl.presentation.components.FilterPickerTopBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +12,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.alexmester.impl.presentation.components.FilterPickerTopBar
 import dev.alexmester.models.locale.LocaleItem
+import dev.alexmester.ui.R
 import dev.alexmester.ui.components.locale.LaskLocaleRowItem
 import dev.alexmester.ui.desing_system.LaskColors
 import dev.alexmester.utils.BuildLocale
@@ -31,7 +33,7 @@ internal fun CountryPickerScreen(
     Scaffold(
         topBar = {
             FilterPickerTopBar(
-                title = "Country",
+                title = stringResource(R.string.search_country),
                 isApplyEnabled = false,
                 onBack = onBack,
                 onApply = {},
@@ -57,52 +59,6 @@ internal fun CountryPickerScreen(
             items(items, key = { it.code }) { item ->
                 LaskLocaleRowItem(
                     isSelected = item.code == selectedCountry,
-                    item = item,
-                    onClick = { onSelect(item.code) },
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun LanguagePickerScreen(
-    selectedLanguage: String?,
-    onSelect: (String?) -> Unit,
-    onBack: () -> Unit,
-) {
-    val items = remember { BuildLocale.buildLanguageItems() }
-
-    Scaffold(
-        topBar = {
-            FilterPickerTopBar(
-                title = "Language",
-                isApplyEnabled = false,
-                onBack = onBack,
-                onApply = {},
-                showApply = false,
-            )
-        },
-        containerColor = MaterialTheme.LaskColors.backgroundPrimary,
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.LaskColors.backgroundPrimary)
-                .padding(paddingValues),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-        ) {
-            item {
-                LaskLocaleRowItem(
-                    isSelected = selectedLanguage == null,
-                    item = LocaleItem("", "Any language", "🌐"),
-                    onClick = { onSelect(null) },
-                )
-            }
-            items(items, key = { it.code }) { item ->
-                LaskLocaleRowItem(
-                    isSelected = item.code == selectedLanguage,
                     item = item,
                     onClick = { onSelect(item.code) },
                 )

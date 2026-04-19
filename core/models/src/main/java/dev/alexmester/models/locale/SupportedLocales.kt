@@ -1,4 +1,4 @@
-package dev.alexmester.models.news
+package dev.alexmester.models.locale
 
 object SupportedLocales {
 

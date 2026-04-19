@@ -36,7 +36,7 @@ internal fun ExploreList(
     onIntent: (ExploreIntent) -> Unit,
 ) {
 
-    val lastArticle = state.articles.last()
+    val lastArticle = state.articles.lastOrNull()
 
     LazyColumn(
         contentPadding = PaddingValues(bottom = 16.dp),

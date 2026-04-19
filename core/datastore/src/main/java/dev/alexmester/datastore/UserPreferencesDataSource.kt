@@ -9,7 +9,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import dev.alexmester.datastore.model.UserPreferences
-import dev.alexmester.models.news.SupportedLocales
+import dev.alexmester.models.locale.SupportedLocales
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

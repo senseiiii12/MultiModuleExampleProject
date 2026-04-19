@@ -1,7 +1,7 @@
 package dev.alexmester.datastore.util
 
 import android.content.Context
-import dev.alexmester.models.news.SupportedLocales
+import dev.alexmester.models.locale.SupportedLocales
 
 class DeviceLocaleProvider(
     private val context: Context

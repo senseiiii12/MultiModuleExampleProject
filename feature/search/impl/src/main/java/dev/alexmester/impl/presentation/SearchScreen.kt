@@ -35,10 +35,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alexmester.impl.domain.model.SearchFilters
-import dev.alexmester.impl.presentation.components.CategoryPickerScreen
-import dev.alexmester.impl.presentation.components.DateRangePickerScreen
+import dev.alexmester.impl.presentation.components.FilterOverlay
+import dev.alexmester.impl.presentation.components.filter_picker.CategoryPickerScreen
+import dev.alexmester.impl.presentation.components.filter_picker.DateRangePickerScreen
 import dev.alexmester.impl.presentation.components.SearchFilterRow
-import dev.alexmester.impl.presentation.components.SortPickerScreen
+import dev.alexmester.impl.presentation.components.filter_picker.SortDirectionPickerScreen
 import dev.alexmester.impl.presentation.components.filter_picker.CountryPickerScreen
 import dev.alexmester.impl.presentation.components.filter_picker.LanguagePickerScreen
 import dev.alexmester.impl.presentation.mvi.FilterType
@@ -62,6 +63,7 @@ fun SearchScreen(
     onArticleClick: (Long, String) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val readArticleIds by viewModel.readArticleIds.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.sideEffects.collect { effect ->
@@ -75,6 +77,7 @@ fun SearchScreen(
 
     SearchScreenContent(
         state = state,
+        readArticleIds = readArticleIds,
         onIntent = viewModel::handleIntent,
     )
 }
@@ -82,6 +85,7 @@ fun SearchScreen(
 @Composable
 internal fun SearchScreenContent(
     state: SearchState,
+    readArticleIds: Set<Long>,
     onIntent: (SearchIntent) -> Unit,
 ) {
     var activeFilter by remember { mutableStateOf<FilterType?>(null) }
@@ -212,6 +216,7 @@ internal fun SearchScreenContent(
                             LaskArticleCard(
                                 modifier = Modifier.fillMaxWidth(),
                                 article = article,
+                                isRead = article.id in readArticleIds,
                                 onClick = {
                                     onIntent(SearchIntent.ArticleClick(article.id, article.url))
                                 },
@@ -254,52 +259,3 @@ internal fun SearchScreenContent(
     }
 }
 
-@Composable
-private fun FilterOverlay(
-    filterType: FilterType,
-    filters: SearchFilters,
-    onFiltersChanged: (SearchFilters) -> Unit,
-    onBack: () -> Unit,
-) {
-    when (filterType) {
-        FilterType.CATEGORY -> CategoryPickerScreen(
-            selectedCategory = filters.category,
-            onSelect = { cat -> onFiltersChanged(filters.copy(category = cat)) },
-            onBack = onBack,
-        )
-
-        FilterType.COUNTRY -> {
-            CountryPickerScreen(
-                selectedCountry = filters.country,
-                onSelect = { code -> onFiltersChanged(filters.copy(country = code)) },
-                onBack = onBack,
-            )
-        }
-
-        FilterType.LANGUAGE -> {
-            LanguagePickerScreen(
-                selectedLanguage = filters.language,
-                onSelect = { code -> onFiltersChanged(filters.copy(language = code)) },
-                onBack = onBack,
-            )
-        }
-
-        FilterType.DATE -> DateRangePickerScreen(
-            earliestDate = filters.earliestDate,
-            latestDate = filters.latestDate,
-            onApply = { earliest, latest ->
-                onFiltersChanged(filters.copy(earliestDate = earliest, latestDate = latest))
-            },
-            onBack = onBack,
-        )
-
-        FilterType.SORT -> SortPickerScreen(
-            sortAscending = filters.sortAscending,
-            onSelect = { asc ->
-                onFiltersChanged(filters.copy(sortAscending = asc))
-                onBack()
-            },
-            onBack = onBack,
-        )
-    }
-}

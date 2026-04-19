@@ -93,9 +93,7 @@ private fun ExploreScreenContent(
 ) {
     Scaffold(
         topBar = {
-            ExploreTopBar(
-                onSearch = onSearch
-            )
+            ExploreTopBar(onSearch = onSearch)
         }
     ) { paddingValues ->
         Box(
@@ -122,11 +120,11 @@ private fun ExploreScreenContent(
                 }
 
                 is ExploreState.EmptyInterests -> {
-                    Text(
+                    LaskErrorScreen(
                         modifier = Modifier.padding(24.dp).align(Alignment.Center),
-                        text = stringResource(R.string.interests_empty_message),
-                        style = MaterialTheme.LaskTypography.body1,
-                        color = MaterialTheme.LaskColors.textSecondary,
+                        errorMessage = stringResource(R.string.interests_empty_message),
+                        isRetrying = state.isRefreshing,
+                        onRetry = { onIntent(ExploreIntent.Refresh) },
                     )
                 }
 

@@ -14,6 +14,7 @@ val searchModule = module {
         SearchRepositoryImpl(
             remote = get(),
             articleDao = get(),
+            userStateDao = get()
         )
     }
     factory { SearchInteractor(repository = get()) }
